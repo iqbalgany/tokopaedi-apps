@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_store_app/model/cart_model.dart';
-import 'package:grocery_store_app/views/screens/intro_screen.dart';
+import 'package:grocery_store_app/views/constants/app_routes.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -15,12 +15,9 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => CartModel(),
       child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: IntroScreen(),
+        debugShowCheckedModeBanner: false,
+        initialRoute: AppRoutes.signIn,
+        routes: AppRoutes.routes,
       ),
     );
   }

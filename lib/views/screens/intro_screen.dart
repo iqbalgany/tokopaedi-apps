@@ -37,7 +37,7 @@ class IntroScreen extends StatelessWidget {
             ),
           ),
 
-          SizedBox(
+          const SizedBox(
             height: 24,
           ),
 
@@ -54,23 +54,23 @@ class IntroScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          Spacer(),
+          const Spacer(),
 
           /// GET STARTED BUTTON
           GestureDetector(
             onTap: () => Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => HomeScreen(),
+                builder: (context) => const HomeScreen(),
               ),
             ),
             child: Container(
-              padding: EdgeInsets.all(24),
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 color: Colors.deepPurple,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(
+              child: const Text(
                 'Get Started',
                 style: TextStyle(
                   color: Colors.white,
@@ -79,7 +79,7 @@ class IntroScreen extends StatelessWidget {
             ),
           ),
 
-          Spacer(),
+          const Spacer(),
         ],
       ),
     );

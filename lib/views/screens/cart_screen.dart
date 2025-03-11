@@ -18,7 +18,7 @@ class CartScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Text(
                     'My Cart',
                     style: GoogleFonts.notoSerif(
@@ -34,7 +34,7 @@ class CartScreen extends StatelessWidget {
                     itemCount: value.cartItems.length,
                     itemBuilder: (context, index) {
                       return Container(
-                        margin: EdgeInsets.all(12),
+                        margin: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: Colors.grey[200],
                           borderRadius: BorderRadius.circular(8),
@@ -50,7 +50,7 @@ class CartScreen extends StatelessWidget {
                               Provider.of<CartModel>(context, listen: false)
                                   .removeItemFromCart(index);
                             },
-                            icon: Icon(Icons.cancel),
+                            icon: const Icon(Icons.cancel),
                           ),
                         ),
                       );
@@ -60,9 +60,9 @@ class CartScreen extends StatelessWidget {
 
                 /// TOTAL + PAY NOW
                 Padding(
-                  padding: const EdgeInsets.all(36),
+                  padding: const EdgeInsets.fromLTRB(36, 36, 36, 120),
                   child: Container(
-                    padding: EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       color: Colors.green,
@@ -78,8 +78,8 @@ class CartScreen extends StatelessWidget {
                                   color: Colors.green[100],
                                 )),
                             Text(
-                              '\$' + value.calculateTotal(),
-                              style: TextStyle(
+                              '\$${value.calculateTotal()}',
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold),
@@ -89,17 +89,18 @@ class CartScreen extends StatelessWidget {
 
                         /// PAY NOW BUTTON
                         Container(
-                          padding: EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(12),
+                          margin: EdgeInsets.only(),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.green.shade100),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Row(
+                          child: const Row(
                             children: [
                               Text(
                                 'Pay Now',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: Color.fromARGB(255, 94, 12, 12),
                                 ),
                               ),
                               Icon(

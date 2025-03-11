@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery_store_app/model/cart_model.dart';
-import 'package:grocery_store_app/views/screens/cart_screen.dart';
 import 'package:grocery_store_app/views/widgets/grocery_item_tile.dart';
 import 'package:provider/provider.dart';
 
@@ -11,32 +10,21 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CartScreen(),
-          ),
-        ),
-        focusColor: Colors.black,
-        child: Icon(Icons.shopping_bag),
-      ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 48,
             ),
 
             /// GOOD MORNING
-            Padding(
-              padding: const EdgeInsets.symmetric(
+            const Padding(
+              padding: EdgeInsets.symmetric(
                 horizontal: 24,
               ),
               child: Text('Good moring, mate'),
             ),
-            SizedBox(
+            const SizedBox(
               height: 4,
             ),
 
@@ -54,21 +42,21 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            SizedBox(
+            const SizedBox(
               height: 24,
             ),
 
             /// DIVIDER
-            Padding(
-              padding: const EdgeInsets.symmetric(
+            const Padding(
+              padding: EdgeInsets.symmetric(
                 horizontal: 24,
               ),
               child: Divider(),
             ),
 
             /// FRESH ITEMS + GRID
-            Padding(
-              padding: const EdgeInsets.symmetric(
+            const Padding(
+              padding: EdgeInsets.symmetric(
                 horizontal: 24,
               ),
               child: Text(
@@ -79,18 +67,23 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            Expanded(
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.6,
               child: Consumer<CartModel>(
                 builder: (context, value, child) => GridView.builder(
                   itemCount: value.shopItems.length,
-                  padding: EdgeInsets.all(12),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  padding: const EdgeInsets.all(12),
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     childAspectRatio: 1 / 1.3,
                   ),
                   itemBuilder: (context, index) {
                     return GroceryItemTile(
                       itemName: value.shopItems[index][0],
+                      stock: 3,
+                      description: 'Ini Barang',
                       itemPrice: value.shopItems[index][1],
                       imagePath: value.shopItems[index][2],
                       color: value.shopItems[index][3],
@@ -103,6 +96,9 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
+            SizedBox(
+              height: 120,
+            )
           ],
         ),
       ),
