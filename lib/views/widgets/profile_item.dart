@@ -35,7 +35,7 @@ class ProfileItem extends StatelessWidget {
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
               border: Border.all(
-                color: Color(0xffF1ECEC),
+                color: Colors.green,
               ),
               borderRadius: BorderRadius.circular(12),
             ),
@@ -43,21 +43,21 @@ class ProfileItem extends StatelessWidget {
               children: [
                 Icon(
                   icon,
-                  color: Color(0xffABABAB),
+                  color: Colors.green,
                 ),
                 SizedBox(width: 12),
                 Text(
                   text,
                   style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                    color: Color(0xffABABAB),
+                    fontWeight: FontWeight.w300,
+                    fontSize: 16,
+                    color: Colors.black,
                   ),
                 ),
                 Spacer(),
                 Icon(
                   trailingIcon,
-                  color: Color(0xffABABAB),
+                  color: Colors.green,
                 ),
               ],
             ),

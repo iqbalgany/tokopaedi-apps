@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_store_app/views/constants/app_routes.dart';
+import 'package:grocery_store_app/controllers/auth_controller.dart';
 import 'package:grocery_store_app/views/widgets/text_field.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/custom_login_button.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
   @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<AuthController>(context, listen: false);
+    TextEditingController nameController = TextEditingController();
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -55,7 +65,7 @@ class SignupScreen extends StatelessWidget {
             const SizedBox(height: 40),
 
             ///
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(
                 left: 25,
                 right: 25,
@@ -63,12 +73,13 @@ class SignupScreen extends StatelessWidget {
               child: CustomTextField(
                 hintText: 'Masukkan nama anda',
                 text: 'Nama',
+                controller: nameController,
               ),
             ),
             const SizedBox(height: 30),
 
             ///
-            const Padding(
+            Padding(
                 padding: EdgeInsets.only(
                   left: 25,
                   right: 25,
@@ -76,12 +87,12 @@ class SignupScreen extends StatelessWidget {
                 child: CustomTextField(
                   text: 'Email',
                   hintText: 'Masukkan email anda',
-                  obscureText: true,
+                  controller: emailController,
                 )),
             const SizedBox(height: 30),
 
             ///
-            const Padding(
+            Padding(
                 padding: EdgeInsets.only(
                   left: 25,
                   right: 25,
@@ -90,32 +101,7 @@ class SignupScreen extends StatelessWidget {
                   text: 'Password',
                   hintText: 'Masukkan password anda',
                   obscureText: true,
-                )),
-            const SizedBox(height: 30),
-
-            ///
-            const Padding(
-                padding: EdgeInsets.only(
-                  left: 25,
-                  right: 25,
-                ),
-                child: CustomTextField(
-                  text: 'Address',
-                  hintText: 'Masukkan address anda',
-                  obscureText: true,
-                )),
-            const SizedBox(height: 30),
-
-            ///
-            const Padding(
-                padding: EdgeInsets.only(
-                  left: 25,
-                  right: 25,
-                ),
-                child: CustomTextField(
-                  text: 'Phone',
-                  hintText: 'Masukkan phone anda',
-                  obscureText: true,
+                  controller: passwordController,
                 )),
             const SizedBox(height: 30),
 
@@ -143,7 +129,14 @@ class SignupScreen extends StatelessWidget {
             Center(
               child: SignInButton(
                 text: 'Sign Up',
-                onTap: () => Navigator.pushNamed(context, AppRoutes.navbar),
+                onTap: () async {
+                  await provider.signUp(
+                    name: nameController.text,
+                    email: emailController.text,
+                    password: passwordController.text,
+                    context: context,
+                  );
+                },
               ),
             ),
             const SizedBox(height: 25),

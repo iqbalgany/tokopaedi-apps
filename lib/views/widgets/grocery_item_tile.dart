@@ -25,9 +25,10 @@ class GroceryItemTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: color[100],
-        ),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.green,
+            )),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -45,7 +46,7 @@ class GroceryItemTile extends StatelessWidget {
 
             /// IMAGE
             Image.asset(
-              'assets/carrot.png',
+              imagePath,
               height: 64,
             ),
 

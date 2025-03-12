@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_store_app/controllers/auth_controller.dart';
 import 'package:grocery_store_app/views/constants/app_routes.dart';
 import 'package:grocery_store_app/views/widgets/text_field.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/custom_login_button.dart';
 
-class SigninScreen extends StatelessWidget {
+class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
 
   @override
+  State<SigninScreen> createState() => _SigninScreenState();
+}
+
+class _SigninScreenState extends State<SigninScreen> {
+  @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<AuthController>(context, listen: false);
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -55,7 +65,7 @@ class SigninScreen extends StatelessWidget {
             const SizedBox(height: 40),
 
             ///
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(
                 left: 25,
                 right: 25,
@@ -63,20 +73,22 @@ class SigninScreen extends StatelessWidget {
               child: CustomTextField(
                 hintText: 'Masukkan email anda',
                 text: 'Email',
+                controller: emailController,
               ),
             ),
             const SizedBox(height: 30),
 
             ///
-            const Padding(
+            Padding(
                 padding: EdgeInsets.only(
                   left: 25,
                   right: 25,
                 ),
                 child: CustomTextField(
-                  text: 'Email',
+                  text: 'Password',
                   hintText: 'Masukkan password anda',
                   obscureText: true,
+                  controller: passwordController,
                 )),
 
             ///
@@ -101,7 +113,12 @@ class SigninScreen extends StatelessWidget {
             Center(
               child: SignInButton(
                 text: 'Sign In',
-                onTap: () => Navigator.pushNamed(context, AppRoutes.navbar),
+                onTap: () async {
+                  await provider.signIn(
+                      email: emailController.text,
+                      password: passwordController.text,
+                      context: context);
+                },
               ),
             ),
             const SizedBox(height: 25),

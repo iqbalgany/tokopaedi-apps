@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_store_app/controllers/auth_controller.dart';
+import 'package:grocery_store_app/controllers/user_controller.dart';
 import 'package:grocery_store_app/model/cart_model.dart';
 import 'package:grocery_store_app/views/constants/app_routes.dart';
 import 'package:provider/provider.dart';
@@ -12,8 +14,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => CartModel(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => AuthController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => UserController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CartModel(),
+        ),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         initialRoute: AppRoutes.signIn,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_store_app/controllers/user_controller.dart';
 import 'package:grocery_store_app/views/screens/cart_screen.dart';
 import 'package:grocery_store_app/views/screens/home_screen.dart';
 import 'package:grocery_store_app/views/screens/profile_screen.dart';
@@ -12,11 +13,18 @@ class Navbar extends StatefulWidget {
 
 class _NavbarState extends State<Navbar> {
   int currentIndex = 0;
+  UserController userController = UserController();
 
   void onTabTapped(int index) {
     setState(() {
       currentIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    userController.fetchedUser(context);
   }
 
   Widget buildContent(int currentIndex) {
@@ -26,7 +34,9 @@ class _NavbarState extends State<Navbar> {
       case 1:
         return CartScreen();
       case 2:
-        return ProfileScreen();
+        return userController.user == null
+            ? Center(child: CircularProgressIndicator())
+            : ProfileScreen(user: userController.user!);
 
       default:
         return HomeScreen();
@@ -54,7 +64,7 @@ class _NavbarState extends State<Navbar> {
         height: 92,
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: Colors.black),
+          border: Border.all(color: Colors.black, width: 0.2),
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(20),
           ),
@@ -93,12 +103,11 @@ class _NavbarState extends State<Navbar> {
           Icon(
             icon!,
             color: currentIndex == index ? Colors.green : Colors.black,
-            size: 24,
           ),
           Text(
             text!,
             style: TextStyle(
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w400,
               fontSize: 12,
               color: currentIndex == index ? Colors.green : Colors.black,
             ),
