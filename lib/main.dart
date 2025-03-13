@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_store_app/controllers/auth_controller.dart';
+import 'package:grocery_store_app/controllers/product_controller.dart';
 import 'package:grocery_store_app/controllers/user_controller.dart';
 import 'package:grocery_store_app/model/cart_model.dart';
 import 'package:grocery_store_app/views/constants/app_routes.dart';
@@ -21,6 +22,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => UserController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ProductController(),
         ),
         ChangeNotifierProvider(
           create: (context) => CartModel(),

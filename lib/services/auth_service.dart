@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:grocery_store_app/services/storage_service.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-import '../constants.dart';
+import '../views/constants/constants.dart';
 
 class AuthService {
   Dio _dio() {

@@ -1,17 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:grocery_store_app/model/cart_model.dart';
-import 'package:grocery_store_app/views/widgets/grocery_item_tile.dart';
+import 'package:grocery_store_app/controllers/product_controller.dart';
+import 'package:grocery_store_app/model/product_model.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  ScrollController controller = ScrollController();
+
+  @override
+  void initState() {
+    Provider.of<ProductController>(context, listen: false).fetchProducts();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final productController = Provider.of<ProductController>(context);
     return Scaffold(
       body: SafeArea(
-        child: ListView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(
               height: 48,
@@ -22,24 +36,10 @@ class HomeScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                 horizontal: 24,
               ),
-              child: Text('Good moring, mate'),
+              child: Text('Good morning, mate'),
             ),
             const SizedBox(
               height: 4,
-            ),
-
-            /// LET'S ORDER FRESH ITEMS FOR YOU
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-              ),
-              child: Text(
-                'Let\'s order fresh items for you',
-                style: GoogleFonts.notoSerif(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
             ),
 
             const SizedBox(
@@ -54,50 +54,72 @@ class HomeScreen extends StatelessWidget {
               child: Divider(),
             ),
 
-            /// FRESH ITEMS + GRID
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 24,
-              ),
-              child: Text(
-                'Fresh Items',
-                style: TextStyle(
-                  fontSize: 16,
-                ),
+            Expanded(
+              child: ListView.builder(
+                controller: controller,
+                itemCount: productController.products.length,
+                itemBuilder: (context, index) {
+                  ProductModel product = productController.products[index];
+                  return Container(
+                    margin: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.green,
+                        ),
+                        borderRadius: BorderRadius.circular(5)),
+                    child: ListTile(
+                      onTap: () {},
+                      leading: Image.network(
+                        product.image!,
+                        fit: BoxFit.cover,
+                        width: 60,
+                        height: 60,
+                      ),
+                      title: Text(
+                        product.name!,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            product.description!,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                              color: Colors.black54,
+                            ),
+                          ),
+                          Text(
+                            product.category!.name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 12,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                      trailing: Text(
+                        'Rp${product.price}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                          color: Colors.black45,
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
 
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.6,
-              child: Consumer<CartModel>(
-                builder: (context, value, child) => GridView.builder(
-                  itemCount: value.shopItems.length,
-                  padding: const EdgeInsets.all(12),
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1 / 1.3,
-                  ),
-                  itemBuilder: (context, index) {
-                    return GroceryItemTile(
-                      itemName: value.shopItems[index][0],
-                      stock: 3,
-                      description: 'Ini Barang',
-                      itemPrice: value.shopItems[index][1],
-                      imagePath: value.shopItems[index][2],
-                      color: value.shopItems[index][3],
-                      onPressed: () {
-                        Provider.of<CartModel>(context, listen: false)
-                            .addItemToCart(index);
-                      },
-                    );
-                  },
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 120,
+              height: 0,
             )
           ],
         ),

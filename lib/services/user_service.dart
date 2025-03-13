@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:grocery_store_app/constants.dart';
 import 'package:grocery_store_app/model/user_model.dart';
 import 'package:grocery_store_app/services/storage_service.dart';
+import 'package:grocery_store_app/views/constants/constants.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class UserService {
@@ -26,6 +26,7 @@ class UserService {
 
   Future<UserModel?> getUser() async {
     String? token = await StorageService.getToken();
+    print("Token yang dikirim: $token");
 
     if (token == null) {
       print("Error: Token is null!");
@@ -46,6 +47,43 @@ class UserService {
         return UserModel.fromJson(response.data);
       }
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<UserModel?> updateUser({
+    required String name,
+    String? password,
+  }) async {
+    String? token = await StorageService.getToken();
+    print("Token yang dikirim: $token");
+
+    if (token == null) {
+      print('Error: token is null');
+      return null;
+    }
+
+    try {
+      Map<String, dynamic> data = {'name': name};
+      if (password != null && password.isNotEmpty) {
+        data['password'] = password;
+      }
+
+      final Response response = await dio.post(
+        '/user/update',
+        data: data,
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      print('Update Response: ${response.data}');
+
+      return UserModel.fromJson(response.data);
+    } catch (e) {
+      print('Error updating user: $e');
       rethrow;
     }
   }

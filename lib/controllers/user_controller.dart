@@ -9,7 +9,6 @@ class UserController extends ChangeNotifier {
   final UserService _userService = UserService();
 
   UserModel? _user;
-
   bool _isLoading = false;
   String? _error;
 
@@ -51,5 +50,54 @@ class UserController extends ChangeNotifier {
     Navigator.pushReplacementNamed(context, AppRoutes.signIn);
 
     notifyListeners();
+  }
+
+  Future<bool> updateUser(
+      {required BuildContext context,
+      required String name,
+      String? password}) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      final updateUser = await _userService.updateUser(
+        name: name,
+        password: password,
+      );
+
+      if (updateUser != null) {
+        _user = updateUser;
+        notifyListeners();
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Profile updated successfully'),
+            ),
+          );
+        }
+        return true;
+      } else {
+        _error = 'Failed to update';
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to update profile'),
+            ),
+          );
+        }
+        return false;
+      }
+    } catch (e) {
+      _error = 'Error: ${e.toString()}';
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to update profile'),
+          ),
+        );
+      }
+      return false;
+    }
   }
 }

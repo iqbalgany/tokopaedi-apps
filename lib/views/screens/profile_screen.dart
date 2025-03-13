@@ -18,15 +18,16 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = true;
   String? _errorMessage;
+  TextEditingController nameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  bool _obscurePassword = true;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
-        loadUser();
-      },
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadUser();
+    });
   }
 
   void loadUser() async {
@@ -55,13 +56,198 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future<void> _updateProfile() async {
+    final String name = nameController.text.trim();
+    final String password = passwordController.text.trim();
+
+    await Provider.of<UserController>(context, listen: false).updateUser(
+      context: context,
+      name: name,
+      password: password.isEmpty ? null : password,
+    );
+
+    Navigator.pop(context);
+    loadUser();
+  }
+
+  void _showUpdateBottomSheet(UserModel user) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          width: MediaQuery.sizeOf(context).width,
+          height: 450,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 30),
+
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  width: 60,
+                  height: 3,
+                  decoration: BoxDecoration(color: Colors.green),
+                ),
+              ),
+              SizedBox(height: 30),
+
+              ///
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'New Name',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Container(
+                      height: 54,
+                      padding: EdgeInsets.only(bottom: 8),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.green,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: TextField(
+                        controller: nameController,
+                        decoration: InputDecoration(
+                          border: UnderlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          hintText: 'Enter your new name',
+                          prefixIcon: Icon(Icons.person_2_outlined),
+                          prefixIconColor: Colors.green,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+
+              ///
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'New Password',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Container(
+                      height: 54,
+                      padding: EdgeInsets.only(bottom: 8),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.green,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: TextField(
+                        controller: passwordController,
+                        obscureText: _obscurePassword,
+                        decoration: InputDecoration(
+                          border: UnderlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          hintText: 'Enter new password',
+                          prefixIcon: Icon(Icons.lock_outlined),
+                          prefixIconColor: Colors.green,
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                            icon: Icon(_obscurePassword
+                                ? Icons.visibility_off
+                                : Icons.visibility),
+                          ),
+                          suffixIconColor:
+                              _obscurePassword ? Colors.grey : Colors.green,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(height: 40),
+
+              GestureDetector(
+                onTap: _updateProfile,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Container(
+                    width: MediaQuery.sizeOf(context).width - 0.6,
+                    height: 75,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Update Profile',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<UserController>(context, listen: false);
-
     return Consumer<UserController>(
       builder: (context, userController, child) {
-        final user = provider.user! ?? widget.user;
+        ///
+        if (_isLoading) {
+          return Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        ///
+        if (_errorMessage != null) {
+          return Scaffold(
+            body: Center(
+              child: Column(
+                children: [
+                  Text(_errorMessage!),
+                  ElevatedButton(
+                    onPressed: loadUser,
+                    child: Text('Coba Lagi'),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        ///
+        final user = userController.user ?? widget.user;
         return Scaffold(
           appBar: AppBar(
             leading: Icon(
@@ -70,9 +256,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             actions: [
               IconButton(
-                onPressed: () {
-                  editProfile();
-                },
+                onPressed:
+                    user != null ? () => _showUpdateBottomSheet(user) : null,
                 icon: Icon(
                   Icons.edit,
                   color: Colors.green,
@@ -129,15 +314,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 SizedBox(height: 20),
 
                 ///
-                if (user.emailVerifiedAt != null &&
-                    user.emailVerifiedAt!.isNotEmpty)
-                  ProfileItem(
-                    title: 'Email Status',
-                    icon: Icons.verified,
-                    text: 'Verified',
-                  ),
-
-                ///
                 if (user.createdAt != null)
                   ProfileItem(
                     title: 'Member Since',
@@ -150,62 +326,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         );
       },
-    );
-  }
-
-  void editProfile() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 30),
-
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                width: 60,
-                height: 3,
-                decoration: BoxDecoration(color: Colors.green),
-              ),
-            ),
-            SizedBox(height: 30),
-
-            ///
-            ProfileItem(
-              title: 'Name',
-              icon: Icons.email_outlined,
-              text: 'Bambang Tabootie',
-            ),
-            SizedBox(height: 20),
-
-            ///
-            ProfileItem(
-              title: 'Phone Number',
-              icon: Icons.phone,
-              text: '+93123135',
-            ),
-            SizedBox(height: 20),
-
-            ///
-            ProfileItem(
-              title: 'Address',
-              icon: Icons.home,
-              text: 'Surabaya',
-            ),
-            SizedBox(height: 20),
-
-            ///
-            ProfileItem(
-              title: 'Password',
-              icon: Icons.lock,
-              text: '********',
-              trailingIcon: Icons.remove_red_eye_sharp,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
