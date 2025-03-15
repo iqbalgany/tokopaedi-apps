@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_store_app/controllers/auth_controller.dart';
-import 'package:grocery_store_app/views/constants/app_routes.dart';
 import 'package:grocery_store_app/views/widgets/text_field.dart';
 import 'package:provider/provider.dart';
 
+import '../../constants/app_routes.dart';
 import '../widgets/custom_login_button.dart';
 
 class SigninScreen extends StatefulWidget {
@@ -26,13 +26,6 @@ class _SigninScreenState extends State<SigninScreen> {
           children: [
             const SizedBox(
               height: 70,
-            ),
-            Center(
-              child: Image.asset(
-                'assets/carrot.png',
-                width: 47.84,
-                height: 55.64,
-              ),
             ),
             const SizedBox(height: 100.21),
             const Padding(
@@ -138,7 +131,7 @@ class _SigninScreenState extends State<SigninScreen> {
                 GestureDetector(
                   onTap: () => Navigator.pushNamed(context, AppRoutes.signUp),
                   child: const Text(
-                    'Singup',
+                    'SingUp',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,

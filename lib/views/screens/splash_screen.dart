@@ -1,9 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:grocery_store_app/views/screens/home_screen.dart';
+import 'package:grocery_store_app/constants/app_routes.dart';
 
-class IntroScreen extends StatelessWidget {
-  const IntroScreen({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.pushReplacementNamed(
+        context,
+        AppRoutes.signIn,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,30 +68,6 @@ class IntroScreen extends StatelessWidget {
                 color: Colors.grey[600],
               ),
               textAlign: TextAlign.center,
-            ),
-          ),
-          const Spacer(),
-
-          /// GET STARTED BUTTON
-          GestureDetector(
-            onTap: () => Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const HomeScreen(),
-              ),
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.deepPurple,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Text(
-                'Get Started',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
             ),
           ),
 

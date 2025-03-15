@@ -8,32 +8,34 @@ class ProductController extends ChangeNotifier {
   List<ProductModel> _products = [];
   bool _isLoading = false;
   String _errorMessage = '';
+  bool hasMore = true;
+  int _currentPage = 1;
 
   List<ProductModel> get products => _products;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
 
-  Future<void> fetchProducts({
-    int page = 1,
-    String? name,
-    String? categoryId,
-    String? minPrice,
-    String? maxPrice,
-  }) async {
+  Future<void> fetchProducts({bool isLoadMore = false}) async {
+    if (_isLoading || !hasMore) return;
+
     _isLoading = true;
     _errorMessage = '';
     notifyListeners();
 
     try {
-      List<ProductModel> fetchedProducts = await _productService.getProducts(
-        page: page,
-        name: name,
-        categoryId: categoryId,
-        minPrice: minPrice,
-        maxPrice: maxPrice,
-      );
+      List<ProductModel> fetchedProducts =
+          await _productService.getProducts(page: _currentPage);
 
-      _products = fetchedProducts;
+      if (fetchedProducts.isNotEmpty) {
+        if (isLoadMore) {
+          _products.addAll(fetchedProducts);
+        } else {
+          _products = fetchedProducts;
+        }
+        _currentPage++;
+      } else {
+        hasMore = false;
+      }
     } catch (e) {
       _errorMessage = 'Terjadi kesalah saat mengambil produk';
     }

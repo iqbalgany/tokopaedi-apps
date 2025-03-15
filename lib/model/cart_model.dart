@@ -1,40 +1,47 @@
-import 'package:flutter/material.dart';
+import 'package:grocery_store_app/model/product_model.dart';
 
-class CartModel extends ChangeNotifier {
-  /// LIST OF ITEM ON SALE
-  final List _shopItems = [
-    // [ itemName, itemPrice, imagePath, color ]
-    ['Avocado', '5.00', 'assets/avocado.png', Colors.green],
-    ['Banana', '6.00', 'assets/banana.png', Colors.yellow],
-    ['Chicken', '10.00', 'assets/chicken.png', Colors.brown],
-    ['water', '2.00', 'assets/water.png', Colors.blue],
-  ];
+class CartModel {
+  final int? id;
+  final int? productId;
+  final int? userId;
+  int? quantity;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final ProductModel? product;
 
-  /// LIST OF CART ITEMS
-  final List _cartItems = [];
+  CartModel({
+    this.id,
+    this.productId,
+    this.userId,
+    this.quantity,
+    this.createdAt,
+    this.updatedAt,
+    this.product,
+  });
 
-  get shopItems => _shopItems;
+  factory CartModel.fromJson(Map<String, dynamic> json) => CartModel(
+        id: json["id"],
+        productId: json["product_id"],
+        userId: json["user_id"],
+        quantity: json["quantity"],
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null
+            ? null
+            : DateTime.parse(json["updated_at"]),
+        product: json["product"] == null
+            ? null
+            : ProductModel.fromJson(json["product"]),
+      );
 
-  get cartItems => _cartItems;
-
-  ///  ADD ITEM TO CART
-  void addItemToCart(int index) {
-    _cartItems.add(_shopItems[index]);
-    notifyListeners();
-  }
-
-  /// REMOVE ITEM FROM CART
-  void removeItemFromCart(int index) {
-    _cartItems.removeAt(index);
-    notifyListeners();
-  }
-
-  /// CALCULATE TOTAL PRICE
-  String calculateTotal() {
-    double totalPrice = 0;
-    for (int i = 0; i < _cartItems.length; i++) {
-      totalPrice += double.parse(_cartItems[i][1]);
-    }
-    return totalPrice.toStringAsFixed(2);
-  }
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "product_id": productId,
+        "user_id": userId,
+        "quantity": quantity,
+        "created_at": createdAt?.toIso8601String(),
+        "updated_at": updatedAt?.toIso8601String(),
+        "product": product?.toJson(),
+      };
 }

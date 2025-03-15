@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:grocery_store_app/model/user_model.dart';
 import 'package:grocery_store_app/services/storage_service.dart';
-import 'package:grocery_store_app/views/constants/constants.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+
+import '../constants/constants.dart';
 
 class UserService {
   Dio _dio() {
@@ -75,6 +76,7 @@ class UserService {
         options: Options(
           headers: {
             "Authorization": "Bearer $token",
+            "Accept": "application/json",
           },
         ),
       );

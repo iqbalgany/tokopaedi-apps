@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_store_app/services/storage_service.dart';
-import 'package:grocery_store_app/views/constants/app_routes.dart';
+
+import '../constants/app_routes.dart';
 
 class AuthController extends ChangeNotifier {
   Future<void> signIn({

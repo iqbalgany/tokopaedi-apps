@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_store_app/constants/app_routes.dart';
+import 'package:grocery_store_app/controllers/cart_controller.dart';
 import 'package:grocery_store_app/controllers/product_controller.dart';
 import 'package:grocery_store_app/model/product_model.dart';
 import 'package:provider/provider.dart';
@@ -11,54 +13,62 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  ScrollController controller = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
-    Provider.of<ProductController>(context, listen: false).fetchProducts();
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final productController =
+          Provider.of<ProductController>(context, listen: false);
+      await productController.fetchProducts();
+    });
+
+    _scrollController.addListener(
+      () {
+        final productController =
+            Provider.of<ProductController>(context, listen: false);
+
+        if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 200) {
+          productController.fetchProducts(isLoadMore: true);
+        }
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final productController = Provider.of<ProductController>(context);
+    final cartController = Provider.of<CartController>(context);
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 48,
-            ),
-
-            /// GOOD MORNING
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 24,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 30),
+          ListTile(
+            title: Text(
+              'Good Morning, Mate',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Colors.black,
               ),
-              child: Text('Good morning, mate'),
             ),
-            const SizedBox(
-              height: 4,
+            trailing: IconButton(
+              onPressed: () => Navigator.pushNamed(context, AppRoutes.cart),
+              icon: Icon(Icons.shopping_basket_outlined),
             ),
-
-            const SizedBox(
-              height: 24,
-            ),
-
-            /// DIVIDER
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 24,
-              ),
-              child: Divider(),
-            ),
-
-            Expanded(
-              child: ListView.builder(
-                controller: controller,
-                itemCount: productController.products.length,
-                itemBuilder: (context, index) {
+          ),
+          Divider(),
+          Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.all(0),
+              controller: _scrollController,
+              itemCount: productController.products.length + 1,
+              itemBuilder: (context, index) {
+                if (index < productController.products.length) {
                   ProductModel product = productController.products[index];
                   return Container(
                     margin: EdgeInsets.all(10),
@@ -68,7 +78,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         borderRadius: BorderRadius.circular(5)),
                     child: ListTile(
-                      onTap: () {},
+                      onTap: () async {
+                        await cartController.addToCart(product.id!, 1);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: Duration(milliseconds: 100),
+                            content: Text(
+                                cartController.message ?? 'Added to cart!'),
+                          ),
+                        );
+                      },
                       leading: Image.network(
                         product.image!,
                         fit: BoxFit.cover,
@@ -114,15 +133,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   );
-                },
-              ),
+                } else {
+                  return productController.hasMore
+                      ? Center(child: CircularProgressIndicator())
+                      : SizedBox();
+                }
+              },
             ),
-
-            SizedBox(
-              height: 0,
-            )
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

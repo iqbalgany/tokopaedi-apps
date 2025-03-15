@@ -27,13 +27,6 @@ class _SignupScreenState extends State<SignupScreen> {
             const SizedBox(
               height: 70,
             ),
-            Center(
-              child: Image.asset(
-                'assets/carrot.png',
-                width: 47.84,
-                height: 55.64,
-              ),
-            ),
             const SizedBox(height: 100.21),
             const Padding(
               padding: EdgeInsets.only(left: 25),
@@ -156,7 +149,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: const Text(
-                    'Singin',
+                    'SingIn',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,

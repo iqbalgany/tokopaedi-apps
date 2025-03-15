@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_store_app/model/user_model.dart';
 import 'package:grocery_store_app/services/storage_service.dart';
-import 'package:grocery_store_app/views/constants/app_routes.dart';
 
+import '../constants/app_routes.dart';
 import '../services/user_service.dart';
 
 class UserController extends ChangeNotifier {

@@ -13,16 +13,16 @@ class ProductModel {
   final CategoryModel? category;
 
   ProductModel({
-    required this.id,
-    required this.image,
-    required this.name,
-    required this.price,
-    required this.description,
-    required this.categoryId,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.rupiah,
-    required this.category,
+    this.id,
+    this.image,
+    this.name,
+    this.price,
+    this.description,
+    this.categoryId,
+    this.createdAt,
+    this.updatedAt,
+    this.rupiah,
+    this.category,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(

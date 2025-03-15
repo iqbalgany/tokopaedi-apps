@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_store_app/controllers/user_controller.dart';
-import 'package:grocery_store_app/views/screens/cart_screen.dart';
 import 'package:grocery_store_app/views/screens/home_screen.dart';
 import 'package:grocery_store_app/views/screens/profile_screen.dart';
 
@@ -31,9 +30,8 @@ class _NavbarState extends State<Navbar> {
     switch (currentIndex) {
       case 0:
         return HomeScreen();
+
       case 1:
-        return CartScreen();
-      case 2:
         return userController.user == null
             ? Center(child: CircularProgressIndicator())
             : ProfileScreen(user: userController.user!);
@@ -78,11 +76,7 @@ class _NavbarState extends State<Navbar> {
 
             ///
             navbarItem(
-                icon: Icons.shopping_cart_outlined, index: 1, text: 'Cart'),
-
-            ///
-            navbarItem(
-                icon: Icons.account_circle_outlined, index: 2, text: 'Profile'),
+                icon: Icons.account_circle_outlined, index: 1, text: 'Profile'),
           ],
         ),
       ),
