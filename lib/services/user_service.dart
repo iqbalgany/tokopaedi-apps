@@ -27,12 +27,6 @@ class UserService {
 
   Future<UserModel?> getUser() async {
     String? token = await StorageService.getToken();
-    print("Token yang dikirim: $token");
-
-    if (token == null) {
-      print("Error: Token is null!");
-      return null;
-    }
 
     try {
       final Response response = await dio.get(
@@ -57,12 +51,6 @@ class UserService {
     String? password,
   }) async {
     String? token = await StorageService.getToken();
-    print("Token yang dikirim: $token");
-
-    if (token == null) {
-      print('Error: token is null');
-      return null;
-    }
 
     try {
       Map<String, dynamic> data = {'name': name};
@@ -81,12 +69,22 @@ class UserService {
         ),
       );
 
-      print('Update Response: ${response.data}');
-
       return UserModel.fromJson(response.data);
-    } catch (e) {
-      print('Error updating user: $e');
-      rethrow;
+    } on DioException catch (e) {
+      if (e.response != null) {
+        final Map<String, dynamic> errorData = e.response!.data;
+
+        if (errorData.containsKey('errors')) {
+          String errorMessage = errorData['errors']
+              .values
+              .map((messages) => messages.join(', '))
+              .join('\n');
+          throw Exception(errorMessage);
+        } else if (errorData.containsKey('message')) {
+          throw Exception(errorData['messages']);
+        }
+      }
+      throw Exception('Failed to update user');
     }
   }
 }

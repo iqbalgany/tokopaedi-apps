@@ -27,30 +27,45 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back_sharp),
+        ),
+        title: Text(
+          'Keranjang',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
+            color: Colors.black54,
+          ),
+        ),
+      ),
       body: Consumer<CartController>(
         builder: (context, cartController, child) {
           if (cartController.cartModel.isEmpty) {
             return Center(
-              child: Text('Kerajang kosong'),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.remove_shopping_cart,
+                      size: 50, color: Colors.grey),
+                  SizedBox(height: 10),
+                  Text(
+                    'Keranjang kosong',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    'Tambahkan produk untuk melanjutkan belanja!',
+                    style: TextStyle(fontSize: 14, color: Colors.black54),
+                  ),
+                ],
+              ),
             );
           }
           return Column(
             children: [
-              SizedBox(height: 30),
-              ListTile(
-                leading: IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: Icon(Icons.arrow_back_sharp),
-                ),
-                title: Text(
-                  'Keranjang',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                    color: Colors.black54,
-                  ),
-                ),
-              ),
               Divider(),
               Expanded(
                 child: ListView.builder(
@@ -58,11 +73,12 @@ class _CartScreenState extends State<CartScreen> {
                   itemCount: cartController.cartModel.length,
                   itemBuilder: (context, index) {
                     final cartItem = cartController.cartModel[index];
+                    int cartId = cartItem.id!;
                     return Container(
                       padding: EdgeInsets.all(10),
                       margin: EdgeInsets.symmetric(vertical: 5),
                       width: MediaQuery.sizeOf(context).width,
-                      height: 100,
+                      height: 120,
                       decoration: BoxDecoration(
                         border: Border.all(
                           width: 0.3,
@@ -85,7 +101,7 @@ class _CartScreenState extends State<CartScreen> {
                                 cartItem.product?.name ?? 'Nama tidak tersedia',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 12,
+                                  fontSize: 16,
                                   color: Colors.black45,
                                 ),
                               ),
@@ -98,45 +114,70 @@ class _CartScreenState extends State<CartScreen> {
                                   color: Colors.black,
                                 ),
                               ),
-                              Container(
-                                width: 130,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  border: Border.all(
-                                    width: 0.3,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    IconButton(
-                                        onPressed: () {
-                                          cartController
-                                              .decreaseQuantity(index);
-                                        },
-                                        icon: Icon(Icons.remove)),
-                                    Text(
-                                      (cartItem.quantity!).toString(),
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 14,
-                                        color: Colors.black45,
+                              Spacer(),
+                              IconButton(
+                                onPressed: () async {
+                                  try {
+                                    await cartController.removeItem(cartId);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        duration: Duration(milliseconds: 100),
+                                        content:
+                                            Text('Item removed successfully'),
                                       ),
-                                    ),
-                                    IconButton(
-                                        onPressed: () {
-                                          cartController
-                                              .increaseQuantity(index);
-                                        },
-                                        icon: Icon(Icons.add))
-                                  ],
-                                ),
-                              )
+                                    );
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        duration: Duration(milliseconds: 100),
+                                        content: Text('Failed to remove item'),
+                                      ),
+                                    );
+                                  }
+                                },
+                                icon: Icon(Icons.delete_outline),
+                              ),
                             ],
-                          )
+                          ),
+                          Spacer(),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              width: 130,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                border: Border.all(
+                                  width: 0.3,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  IconButton(
+                                      onPressed: () {
+                                        cartController.decreaseQuantity(index);
+                                      },
+                                      icon: Icon(Icons.remove)),
+                                  Text(
+                                    (cartItem.quantity!).toString(),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                  IconButton(
+                                      onPressed: () {
+                                        cartController.increaseQuantity(index);
+                                      },
+                                      icon: Icon(Icons.add))
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     );

@@ -67,4 +67,30 @@ class CartService {
       return 'Failed to add to cart';
     }
   }
+
+  Future<bool> removeFromCart(int cartId) async {
+    String? token = await StorageService.getToken();
+
+    try {
+      Response response = await dio.post(
+        '/carts/remove',
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "Accept": "application/json",
+          },
+        ),
+        data: {'cart_id': cartId},
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return false;
+    }
+  }
 }

@@ -89,11 +89,11 @@ class UserController extends ChangeNotifier {
         return false;
       }
     } catch (e) {
-      _error = 'Error: ${e.toString()}';
+      _error = e.toString();
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to update profile'),
+          SnackBar(
+            content: Text(_error!),
           ),
         );
       }

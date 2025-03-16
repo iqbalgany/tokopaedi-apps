@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_store_app/controllers/auth_controller.dart';
 import 'package:grocery_store_app/controllers/cart_controller.dart';
+import 'package:grocery_store_app/controllers/checkout_controller.dart';
 import 'package:grocery_store_app/controllers/product_controller.dart';
 import 'package:grocery_store_app/controllers/user_controller.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => CartController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CheckoutController(),
         ),
       ],
       child: MaterialApp(

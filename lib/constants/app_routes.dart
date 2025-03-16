@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_store_app/views/screens/cart_screen.dart';
+import 'package:grocery_store_app/views/screens/checkout_screen.dart';
 import 'package:grocery_store_app/views/screens/home_screen.dart';
 import 'package:grocery_store_app/views/screens/signin_screen.dart';
 import 'package:grocery_store_app/views/screens/signup_screen.dart';
@@ -13,6 +14,7 @@ class AppRoutes {
   static const String home = "/home";
   static const String cart = "/cart";
   static const String product = "/product";
+  static const String checkout = "/checkout";
 
   /// Bottom Navigation Bar
   static const String navbar = "/navbar";
@@ -23,6 +25,7 @@ class AppRoutes {
     signUp: (context) => const SignupScreen(),
     cart: (context) => const CartScreen(),
     home: (context) => const HomeScreen(),
+    checkout: (context) => const CheckoutScreen(),
 
     /// Bottom Navigation Bar
     navbar: (context) => const Navbar(),

@@ -20,19 +20,15 @@ class CartController extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    // Simpan data yang ada sebelum di-fetch ulang
     List<CartModel> oldCarts = List.from(_carts);
 
-    // Ambil data dari server
     List<CartModel> fetchedCarts = await _cartService.getCarts();
 
-    // Gabungkan dengan data lokal yang sudah diperbarui
     for (var cart in oldCarts) {
       int index = fetchedCarts
           .indexWhere((item) => item.product?.id == cart.product?.id);
       if (index != -1) {
-        fetchedCarts[index].quantity =
-            cart.quantity; // Pertahankan quantity yang diubah
+        fetchedCarts[index].quantity = cart.quantity;
       }
     }
 
@@ -46,15 +42,12 @@ class CartController extends ChangeNotifier {
     _message = null;
     notifyListeners();
 
-    // Cek apakah produk sudah ada dalam keranjang
     int index = _carts.indexWhere((item) => item.product?.id == productId);
 
     if (index != -1) {
-      // Jika sudah ada, tambah quantity
       _carts[index].quantity =
           (_carts[index].quantity ?? 0) + additionalQuantity;
     } else {
-      // Jika belum ada, tambahkan produk baru dengan quantity yang diinginkan
       _carts.add(CartModel(
         product: ProductModel(id: productId),
         quantity: additionalQuantity,
@@ -79,6 +72,23 @@ class CartController extends ChangeNotifier {
     if ((_carts[index].quantity ?? 0) > 1) {
       _carts[index].quantity = (_carts[index].quantity ?? 1) - 1;
       notifyListeners();
+    }
+  }
+
+  Future<void> removeItem(int cartId) async {
+    _isLoading = true;
+    notifyListeners();
+
+    bool success = await _cartService.removeFromCart(cartId);
+
+    _isLoading = false;
+    notifyListeners();
+
+    if (success) {
+      _carts.removeWhere((item) => item.id == cartId);
+      notifyListeners();
+    } else {
+      throw Exception('Failed to remove item from cart');
     }
   }
 }
