@@ -1,0 +1,67 @@
+import 'package:flutter/material.dart';
+import 'package:grocery_store_app/model/order_model.dart';
+import 'package:grocery_store_app/services/order_service.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../model/checkout_model.dart';
+
+class OrderController extends ChangeNotifier {
+  final OrderService _orderService = OrderService();
+
+  CheckoutModel? _checkout;
+  bool _isLoading = false;
+  List<OrderModel> _orders = [];
+  String? _errorMessage;
+
+  CheckoutModel? get checkout => _checkout;
+  bool get isLoading => _isLoading;
+  List<OrderModel> get orders => _orders;
+  String? get errorMessage => _errorMessage;
+
+  Future<void> getOrder() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      _orders = await _orderService.fetchOrder();
+      debugPrint('Orders Fetched: $_orders');
+    } catch (e) {
+      _errorMessage = e.toString();
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> checkoutOrder(BuildContext context, double totalPrice) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      _checkout = await _orderService.checkoutOrder(totalPrice);
+      await _orderService.fetchOrder();
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('checkout Error: $e');
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> fetchOrders() async {
+    try {
+      _orders = await _orderService.fetchOrder();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('fetch Error: $e');
+    }
+  }
+
+  Future<void> openMidtransPayment(String url) async {
+    final Uri uri = Uri.parse(url);
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+}

@@ -11,7 +11,7 @@ class CartController extends ChangeNotifier {
   String? _errorMessage;
   String? _message;
 
-  List<CartModel> get cartModel => _carts;
+  List<CartModel> get carts => _carts;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   String? get message => _message;
@@ -75,6 +75,13 @@ class CartController extends ChangeNotifier {
     }
   }
 
+  double getTotalPrice() {
+    return _carts.fold(
+      0,
+      (sum, item) => sum + (item.quantity! * item.product!.price!),
+    );
+  }
+
   Future<void> removeItem(int cartId) async {
     _isLoading = true;
     notifyListeners();
@@ -90,5 +97,10 @@ class CartController extends ChangeNotifier {
     } else {
       throw Exception('Failed to remove item from cart');
     }
+  }
+
+  void clearCart() {
+    _carts.clear();
+    notifyListeners();
   }
 }

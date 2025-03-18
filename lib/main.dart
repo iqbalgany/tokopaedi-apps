@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_store_app/controllers/auth_controller.dart';
 import 'package:grocery_store_app/controllers/cart_controller.dart';
-import 'package:grocery_store_app/controllers/checkout_controller.dart';
+import 'package:grocery_store_app/controllers/order_controller.dart';
 import 'package:grocery_store_app/controllers/product_controller.dart';
 import 'package:grocery_store_app/controllers/user_controller.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'constants/app_routes.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
           create: (context) => CartController(),
         ),
         ChangeNotifierProvider(
-          create: (context) => CheckoutController(),
+          create: (context) => OrderController(),
         ),
       ],
       child: MaterialApp(
