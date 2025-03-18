@@ -66,4 +66,22 @@ class OrderService {
       rethrow;
     }
   }
+
+  Future<OrderModel?> getOrderDetail(int orderId) async {
+    String? token = await StorageService.getToken();
+    try {
+      Response response = await dio.get(
+        '/orders/$orderId',
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "Accept": "application/json",
+          },
+        ),
+      );
+      return OrderModel.fromJson(response.data['data']);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

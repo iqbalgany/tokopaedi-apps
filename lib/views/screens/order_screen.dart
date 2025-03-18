@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_store_app/controllers/order_controller.dart';
+import 'package:grocery_store_app/views/screens/detail_order_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class OrderScreen extends StatefulWidget {
   const OrderScreen({super.key});
@@ -48,25 +48,12 @@ class _OrderScreenState extends State<OrderScreen> {
               itemBuilder: (context, index) {
                 final order = orderController.orders[index];
                 return GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          content: SizedBox(
-                            width: double.maxFinite,
-                            height: 500,
-                            child: WebViewWidget(
-                              controller: WebViewController()
-                                ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                                ..loadRequest(
-                                    Uri.parse(order.midtransPaymentUrl!)),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            DetailOrderScreen(orderId: order.id!),
+                      )),
                   child: Container(
                     margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     padding: EdgeInsets.all(15),

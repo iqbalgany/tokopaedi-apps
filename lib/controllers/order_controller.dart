@@ -12,11 +12,13 @@ class OrderController extends ChangeNotifier {
   bool _isLoading = false;
   List<OrderModel> _orders = [];
   String? _errorMessage;
+  OrderModel? _order;
 
   CheckoutModel? get checkout => _checkout;
   bool get isLoading => _isLoading;
   List<OrderModel> get orders => _orders;
   String? get errorMessage => _errorMessage;
+  OrderModel? get order => _order;
 
   Future<void> getOrder() async {
     _isLoading = true;
@@ -63,5 +65,22 @@ class OrderController extends ChangeNotifier {
   Future<void> openMidtransPayment(String url) async {
     final Uri uri = Uri.parse(url);
     await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
+  Future<void> fetchOrderDetail(int orderId) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final result = await _orderService.getOrderDetail(orderId);
+      _order = result;
+      notifyListeners();
+    } catch (e) {
+      _errorMessage = 'Failed to fetch order detail : $e';
+    }
+
+    _isLoading = false;
+    notifyListeners();
   }
 }
