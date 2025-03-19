@@ -23,16 +23,16 @@ class ProfileItem extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 14,
               color: Colors.black,
             ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Container(
             height: 54,
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               border: Border.all(
                 color: Colors.green,
@@ -45,16 +45,16 @@ class ProfileItem extends StatelessWidget {
                   icon,
                   color: Colors.green,
                 ),
-                SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Text(
                   text,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.w300,
                     fontSize: 16,
                     color: Colors.black,
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 Icon(
                   trailingIcon,
                   color: Colors.green,

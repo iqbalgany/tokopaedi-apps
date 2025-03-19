@@ -27,6 +27,7 @@ class UserService {
 
   Future<UserModel?> getUser() async {
     String? token = await StorageService.getToken();
+    print('Token: $token');
 
     try {
       final Response response = await dio.get(
@@ -35,6 +36,8 @@ class UserService {
           headers: {"Authorization": "Bearer $token"},
         ),
       );
+
+      print('Response Data: ${response.data}');
 
       if (response.data != null && response.data['data'] != null) {
         return UserModel.fromJson(response.data['data']);

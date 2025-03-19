@@ -6,12 +6,14 @@ import 'package:grocery_store_app/controllers/product_controller.dart';
 import 'package:grocery_store_app/controllers/user_controller.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constants/app_routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('id_ID', null);
+  await SharedPreferences.getInstance();
   runApp(const MyApp());
 }
 

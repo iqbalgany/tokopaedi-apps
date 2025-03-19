@@ -72,33 +72,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _showUpdateBottomSheet(UserModel user) {
     showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
       builder: (context) {
         return Container(
           width: MediaQuery.sizeOf(context).width,
           height: 450,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
             children: [
-              SizedBox(height: 30),
-
+              const SizedBox(height: 30),
               Align(
                 alignment: Alignment.center,
                 child: Container(
                   width: 60,
                   height: 3,
-                  decoration: BoxDecoration(color: Colors.green),
+                  decoration: const BoxDecoration(color: Colors.green),
                 ),
               ),
-              SizedBox(height: 30),
-
-              ///
+              const SizedBox(height: 30),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'New Name',
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
@@ -106,10 +103,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: Colors.black,
                       ),
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
                     Container(
                       height: 54,
-                      padding: EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.only(bottom: 8),
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: Colors.green,
@@ -118,7 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       child: TextField(
                         controller: nameController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: UnderlineInputBorder(
                             borderSide: BorderSide.none,
                           ),
@@ -131,7 +128,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               ///
               Padding(
@@ -139,7 +136,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'New Password',
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
@@ -147,10 +144,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: Colors.black,
                       ),
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
                     Container(
                       height: 54,
-                      padding: EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.only(bottom: 8),
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: Colors.green,
@@ -161,11 +158,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         controller: passwordController,
                         obscureText: _obscurePassword,
                         decoration: InputDecoration(
-                          border: UnderlineInputBorder(
+                          border: const UnderlineInputBorder(
                             borderSide: BorderSide.none,
                           ),
                           hintText: 'Enter new password',
-                          prefixIcon: Icon(Icons.lock_outlined),
+                          prefixIcon: const Icon(Icons.lock_outlined),
                           prefixIconColor: Colors.green,
                           suffixIcon: IconButton(
                             onPressed: () {
@@ -185,7 +182,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
 
               GestureDetector(
                 onTap: _updateProfile,
@@ -198,7 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Colors.green,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         'Update Profile',
                         style: TextStyle(
@@ -224,8 +221,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (context, userController, child) {
         ///
         if (_isLoading) {
-          return Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+          return const Scaffold(
+            body: Center(
+              child: Text(
+                'Loading...',
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                  color: Colors.black45,
+                ),
+              ),
+            ),
           );
         }
 
@@ -238,7 +244,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Text(_errorMessage!),
                   ElevatedButton(
                     onPressed: loadUser,
-                    child: Text('Coba Lagi'),
+                    child: const Text('Coba Lagi'),
                   ),
                 ],
               ),
@@ -250,7 +256,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final user = userController.user ?? widget.user;
         return Scaffold(
           appBar: AppBar(
-            leading: Icon(
+            leading: const Icon(
               Icons.abc_outlined,
               color: Colors.white,
             ),
@@ -258,7 +264,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               IconButton(
                 onPressed:
                     user != null ? () => _showUpdateBottomSheet(user) : null,
-                icon: Icon(
+                icon: const Icon(
                   Icons.edit,
                   color: Colors.green,
                 ),
@@ -276,18 +282,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Container(
                         width: 170,
                         height: 170,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           image: DecorationImage(
                               image: AssetImage('assets/profile_picture.jpeg'),
                               fit: BoxFit.cover),
                         ),
                       ),
-                      SizedBox(height: 13),
+                      const SizedBox(height: 13),
                     ],
                   ),
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
 
                 ///
                 ProfileItem(
@@ -295,7 +301,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: Icons.person_2_outlined,
                   text: user!.name,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 ///
                 ProfileItem(
@@ -303,7 +309,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: Icons.email_outlined,
                   text: user.email,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 ///
                 ProfileItem(
@@ -311,7 +317,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: Icons.chair_outlined,
                   text: user.role!,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 ///
                 if (user.createdAt != null)
@@ -321,6 +327,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     text:
                         '${user.createdAt!.day}/${user.createdAt!.month}/${user.createdAt!.year}',
                   ),
+
+                ///
+                GestureDetector(
+                  onTap: () {
+                    userController.signOut(context);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(24, 20, 24, 100),
+                    width: MediaQuery.sizeOf(context).width,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(
+                        20,
+                      ),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Sign Out',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

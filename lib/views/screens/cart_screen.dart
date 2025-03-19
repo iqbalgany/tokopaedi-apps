@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:grocery_store_app/controllers/cart_controller.dart';
 import 'package:grocery_store_app/controllers/order_controller.dart';
 import 'package:grocery_store_app/model/cart_model.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CartScreen extends StatefulWidget {
@@ -31,9 +32,9 @@ class _CartScreenState extends State<CartScreen> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: Icon(Icons.arrow_back_sharp),
+          icon: const Icon(Icons.arrow_back_sharp),
         ),
-        title: Text(
+        title: const Text(
           'Keranjang',
           style: TextStyle(
             fontWeight: FontWeight.w600,
@@ -48,10 +49,10 @@ class _CartScreenState extends State<CartScreen> {
 
           return Column(
             children: [
-              Divider(),
+              const Divider(),
               Expanded(
                 child: cartController.carts.isEmpty
-                    ? Center(
+                    ? const Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -73,14 +74,14 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                       )
                     : ListView.builder(
-                        padding: EdgeInsets.all(0),
+                        padding: const EdgeInsets.all(0),
                         itemCount: cartController.carts.length,
                         itemBuilder: (context, index) {
                           final cartItem = cartController.carts[index];
                           int cartId = cartItem.id!;
                           return Container(
-                            padding: EdgeInsets.all(10),
-                            margin: EdgeInsets.symmetric(vertical: 5),
+                            padding: const EdgeInsets.all(10),
+                            margin: const EdgeInsets.symmetric(vertical: 5),
                             width: MediaQuery.sizeOf(context).width,
                             height: 120,
                             decoration: BoxDecoration(
@@ -97,29 +98,29 @@ class _CartScreenState extends State<CartScreen> {
                                   width: 60,
                                   fit: BoxFit.cover,
                                 ),
-                                SizedBox(width: 15),
+                                const SizedBox(width: 15),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       cartItem.product?.name ??
                                           'Nama tidak tersedia',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.w400,
                                         fontSize: 16,
                                         color: Colors.black45,
                                       ),
                                     ),
                                     Text(
-                                      ('Rp${(cartItem.quantity ?? 0) * (cartItem.product?.price ?? 0)}')
+                                      ('Rp${NumberFormat("#,###", "id_ID").format((cartItem.quantity ?? 0) * (cartItem.product?.price ?? 0))}')
                                           .toString(),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
                                         color: Colors.black,
                                       ),
                                     ),
-                                    Spacer(),
+                                    const Spacer(),
                                     IconButton(
                                       onPressed: () async {
                                         try {
@@ -127,7 +128,7 @@ class _CartScreenState extends State<CartScreen> {
                                               .removeItem(cartId);
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
-                                            SnackBar(
+                                            const SnackBar(
                                               duration:
                                                   Duration(milliseconds: 100),
                                               content: Text(
@@ -137,7 +138,7 @@ class _CartScreenState extends State<CartScreen> {
                                         } catch (e) {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
-                                            SnackBar(
+                                            const SnackBar(
                                               duration:
                                                   Duration(milliseconds: 100),
                                               content:
@@ -146,11 +147,11 @@ class _CartScreenState extends State<CartScreen> {
                                           );
                                         }
                                       },
-                                      icon: Icon(Icons.delete_outline),
+                                      icon: const Icon(Icons.delete_outline),
                                     ),
                                   ],
                                 ),
-                                Spacer(),
+                                const Spacer(),
                                 Align(
                                   alignment: Alignment.bottomCenter,
                                   child: Container(
@@ -172,10 +173,10 @@ class _CartScreenState extends State<CartScreen> {
                                               cartController
                                                   .decreaseQuantity(index);
                                             },
-                                            icon: Icon(Icons.remove)),
+                                            icon: const Icon(Icons.remove)),
                                         Text(
                                           (cartItem.quantity!).toString(),
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontWeight: FontWeight.w400,
                                             fontSize: 14,
                                             color: Colors.black45,
@@ -186,7 +187,7 @@ class _CartScreenState extends State<CartScreen> {
                                               cartController
                                                   .increaseQuantity(index);
                                             },
-                                            icon: Icon(Icons.add))
+                                            icon: const Icon(Icons.add))
                                       ],
                                     ),
                                   ),
@@ -203,7 +204,7 @@ class _CartScreenState extends State<CartScreen> {
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.green,
                   ),
                   child: Row(
@@ -222,7 +223,7 @@ class _CartScreenState extends State<CartScreen> {
                             cartController.carts.isEmpty ||
                                     orderController.checkout == null
                                 ? 'Rp0'
-                                : 'Rp${cartController.getTotalPrice().toStringAsFixed(0)}',
+                                : 'Rp${NumberFormat("#,###", "id_ID").format(cartController.getTotalPrice())}',
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -238,7 +239,7 @@ class _CartScreenState extends State<CartScreen> {
                               context, cartController.getTotalPrice());
                           cartController.clearCart();
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                            const SnackBar(
                               duration: Duration(milliseconds: 100),
                               content: Text('Checkout berhasil'),
                             ),
@@ -246,7 +247,7 @@ class _CartScreenState extends State<CartScreen> {
                         },
                         child: Container(
                           padding: const EdgeInsets.all(12),
-                          margin: EdgeInsets.only(),
+                          margin: const EdgeInsets.only(),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.green.shade100),
                             borderRadius: BorderRadius.circular(12),

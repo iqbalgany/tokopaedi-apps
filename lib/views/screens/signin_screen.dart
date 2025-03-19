@@ -59,7 +59,7 @@ class _SigninScreenState extends State<SigninScreen> {
 
             ///
             Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 left: 25,
                 right: 25,
               ),
@@ -73,7 +73,7 @@ class _SigninScreenState extends State<SigninScreen> {
 
             ///
             Padding(
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   left: 25,
                   right: 25,
                 ),

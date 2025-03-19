@@ -6,6 +6,7 @@ import 'package:grocery_store_app/views/screens/order_screen.dart';
 import 'package:grocery_store_app/views/screens/signin_screen.dart';
 import 'package:grocery_store_app/views/screens/signup_screen.dart';
 import 'package:grocery_store_app/views/screens/splash_screen.dart';
+import 'package:grocery_store_app/views/screens/web_view_screen.dart';
 import 'package:grocery_store_app/views/widgets/navbar.dart';
 
 class AppRoutes {
@@ -17,6 +18,7 @@ class AppRoutes {
   static const String product = "/product";
   static const String order = "/order";
   static const String detailOrder = "/detail-order";
+  static const String webView = "/web-view";
 
   /// Bottom Navigation Bar
   static const String navbar = "/navbar";
@@ -29,6 +31,7 @@ class AppRoutes {
     home: (context) => const HomeScreen(),
     order: (context) => const OrderScreen(),
     detailOrder: (context) => const DetailOrderScreen(),
+    webView: (context) => const WebViewScreen(),
 
     /// Bottom Navigation Bar
     navbar: (context) => const Navbar(),

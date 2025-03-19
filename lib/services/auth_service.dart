@@ -32,6 +32,11 @@ class AuthService {
     try {
       Response response = await dio.post(
         '/register',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+          },
+        ),
         data: {
           'name': name,
           'email': email,
@@ -52,15 +57,24 @@ class AuthService {
     try {
       Response response = await dio.post(
         '/login',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+          },
+        ),
         data: {
           'email': email,
           'password': password,
         },
       );
 
-      String token = response.data['data']['access_token'];
-
-      await StorageService.saveToken(token);
+      String? token = response.data['data']['access_token'];
+      if (token != null) {
+        await StorageService.saveToken(token);
+        print("Token berhasil disimpan: $token");
+      } else {
+        print("Token null, periksa response API.");
+      }
 
       return response;
     } catch (e) {

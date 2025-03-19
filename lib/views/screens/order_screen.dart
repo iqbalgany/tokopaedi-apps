@@ -15,12 +15,10 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(
-      Duration.zero,
-      () {
-        Provider.of<OrderController>(context, listen: false).fetchOrders();
-      },
-    );
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<OrderController>(context, listen: false).fetchOrders();
+    });
   }
 
   @override
@@ -29,158 +27,167 @@ class _OrderScreenState extends State<OrderScreen> {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 50),
-          Text(
-            'Orders',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color: Colors.black,
-            ),
-          ),
-          Divider(),
+          const SizedBox(height: 50),
 
           ///
           Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.all(0),
-              itemCount: orderController.orders.length,
-              itemBuilder: (context, index) {
-                final order = orderController.orders[index];
-                return GestureDetector(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            DetailOrderScreen(orderId: order.id!),
-                      )),
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    padding: EdgeInsets.all(15),
-                    width: MediaQuery.sizeOf(context).width,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(
-                        color: Colors.green,
-                      ),
-                    ),
+            child: orderController.orders.isEmpty
+                ? const Center(
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ///
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.shopping_bag_outlined,
-                              color: Colors.green,
-                              size: 30,
-                            ),
-                            SizedBox(width: 7),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Belanja',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Text(
-                                  DateFormat('dd MMM yyyy')
-                                      .format(order.createdAt!),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12,
-                                    color: Colors.black45,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Spacer(),
-                            Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                  color: Colors.green[100],
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Text(
-                                order.status!,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                  color: Colors.green,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        Divider(),
-
-                        ///
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Image.asset(
-                              'assets/avocado.png',
-                              width: 50,
-                              fit: BoxFit.cover,
-                            ),
-                            SizedBox(width: 15),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  order.code!,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Text(
-                                  '${order.orderItems!.length} barang',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 14,
-                                    color: Colors.black45,
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
+                        Icon(Icons.remove_shopping_cart,
+                            size: 50, color: Colors.grey),
                         SizedBox(height: 10),
-
-                        ///
-                        Row(
-                          children: [
-                            Text(
-                              'Total Belanja : ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Text(
-                              'Rp${(order.totalPrice).toString()}',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        )
+                        Text(
+                          'Order kosong',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          'Silahkan berbelanja telebih dahulu!',
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
+                        ),
                       ],
                     ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.all(0),
+                    itemCount: orderController.orders.length,
+                    itemBuilder: (context, index) {
+                      final order = orderController.orders[index];
+                      return GestureDetector(
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  DetailOrderScreen(orderId: order.id!),
+                            )),
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          padding: const EdgeInsets.all(15),
+                          width: MediaQuery.sizeOf(context).width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                              color: Colors.green,
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              ///
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.shopping_bag_outlined,
+                                    color: Colors.green,
+                                    size: 30,
+                                  ),
+                                  const SizedBox(width: 7),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Belanja',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      Text(
+                                        DateFormat('dd MMM yyyy')
+                                            .format(order.createdAt!),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 12,
+                                          color: Colors.black45,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const Spacer(),
+                                  Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        color: Colors.green[100],
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Text(
+                                      order.status!,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              const Divider(),
+
+                              ///
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        order.code!,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${order.orderItems!.length} barang',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 14,
+                                          color: Colors.black45,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+
+                              ///
+                              Row(
+                                children: [
+                                  const Text(
+                                    'Total Belanja : ',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Rp${NumberFormat("#,###", "id_ID").format(order.totalPrice).toString()}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
-          SizedBox(height: 100),
+          const SizedBox(height: 100),
         ],
       ),
     );

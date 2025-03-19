@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery_store_app/constants/app_routes.dart';
+import 'package:grocery_store_app/services/storage_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,11 +14,24 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    _checkAuthStatus();
+  }
+
+  Future<void> _checkAuthStatus() async {
+    String? token = await StorageService.getToken();
+
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(
-        context,
-        AppRoutes.signIn,
-      );
+      if (token != null && token.isNotEmpty) {
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.navbar,
+        );
+      } else {
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.signIn,
+        );
+      }
     });
   }
 

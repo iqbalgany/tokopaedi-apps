@@ -59,7 +59,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
             ///
             Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 left: 25,
                 right: 25,
               ),
@@ -73,7 +73,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
             ///
             Padding(
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   left: 25,
                   right: 25,
                 ),
@@ -86,7 +86,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
             ///
             Padding(
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   left: 25,
                   right: 25,
                 ),

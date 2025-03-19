@@ -6,7 +6,12 @@ class StorageService {
   static Future<void> saveToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print("Saving Token: $token");
-    await prefs.setString(_tokenKey, token);
+    bool success = await prefs.setString(_tokenKey, token);
+    if (success) {
+      print('Token berhasil disimpan: $token');
+    } else {
+      print('Gagal menyimpan token!');
+    }
   }
 
   static Future<String?> getToken() async {
@@ -18,7 +23,6 @@ class StorageService {
 
   static Future<void> removeToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     await prefs.remove(_tokenKey);
   }
 }

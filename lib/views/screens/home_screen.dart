@@ -3,6 +3,7 @@ import 'package:grocery_store_app/constants/app_routes.dart';
 import 'package:grocery_store_app/controllers/cart_controller.dart';
 import 'package:grocery_store_app/controllers/product_controller.dart';
 import 'package:grocery_store_app/model/product_model.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -32,10 +33,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
         if (_scrollController.position.pixels >=
             _scrollController.position.maxScrollExtent - 200) {
-          productController.fetchProducts(isLoadMore: true);
+          if (!productController.isLoading && productController.hasMore) {
+            productController.fetchProducts(isLoadMore: true);
+          }
         }
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -46,9 +55,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           ListTile(
-            title: Text(
+            title: const Text(
               'Good Morning, Mate',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -58,20 +67,22 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             trailing: IconButton(
               onPressed: () => Navigator.pushNamed(context, AppRoutes.cart),
-              icon: Icon(Icons.shopping_basket_outlined),
+              icon: const Icon(Icons.shopping_basket_outlined),
             ),
           ),
-          Divider(),
+          const Divider(),
           Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
               controller: _scrollController,
+              shrinkWrap: true,
+              physics: const AlwaysScrollableScrollPhysics(),
               itemCount: productController.products.length + 1,
               itemBuilder: (context, index) {
                 if (index < productController.products.length) {
                   ProductModel product = productController.products[index];
                   return Container(
-                    margin: EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                         border: Border.all(
                           color: Colors.green,
@@ -82,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         await cartController.addToCart(product.id!, 1);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            duration: Duration(milliseconds: 100),
+                            duration: const Duration(milliseconds: 100),
                             content: Text(
                                 cartController.message ?? 'Added to cart!'),
                           ),
@@ -96,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       title: Text(
                         product.name!,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                           color: Colors.black,
@@ -107,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Text(
                             product.description!,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 14,
                               color: Colors.black54,
@@ -115,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           Text(
                             product.category!.name,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.w300,
                               fontSize: 12,
                               color: Colors.black,
@@ -124,8 +135,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                       trailing: Text(
-                        'Rp${product.price}',
-                        style: TextStyle(
+                        'Rp${NumberFormat("#,###", "id_ID").format(product.price)}',
+                        style: const TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 14,
                           color: Colors.black45,
@@ -135,8 +146,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 } else {
                   return productController.hasMore
-                      ? Center(child: CircularProgressIndicator())
-                      : SizedBox();
+                      ? const Center(child: CircularProgressIndicator())
+                      : const SizedBox();
                 }
               },
             ),

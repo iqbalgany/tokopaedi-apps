@@ -30,15 +30,15 @@ class _NavbarState extends State<Navbar> {
   Widget buildContent(int currentIndex) {
     switch (currentIndex) {
       case 0:
-        return HomeScreen();
+        return const HomeScreen();
       case 1:
-        return OrderScreen();
+        return const OrderScreen();
       case 2:
         return userController.user == null
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : ProfileScreen(user: userController.user!);
       default:
-        return HomeScreen();
+        return const HomeScreen();
     }
   }
 
@@ -59,12 +59,12 @@ class _NavbarState extends State<Navbar> {
       alignment: Alignment.bottomCenter,
       child: Container(
         width: MediaQuery.sizeOf(context).width,
-        padding: EdgeInsets.only(top: 21),
+        padding: const EdgeInsets.only(top: 21),
         height: 92,
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(color: Colors.black, width: 0.2),
-          borderRadius: BorderRadius.vertical(
+          borderRadius: const BorderRadius.vertical(
             top: Radius.circular(20),
           ),
         ),

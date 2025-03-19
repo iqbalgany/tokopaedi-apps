@@ -5,13 +5,14 @@ import 'package:grocery_store_app/services/product_service.dart';
 class ProductController extends ChangeNotifier {
   final ProductService _productService = ProductService();
 
-  List<ProductModel> _products = [];
+  final List<ProductModel> _allProducts = [];
+  List<ProductModel> _displayedProducts = [];
   bool _isLoading = false;
   String _errorMessage = '';
   bool hasMore = true;
   int _currentPage = 1;
 
-  List<ProductModel> get products => _products;
+  List<ProductModel> get products => _displayedProducts;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
 
@@ -27,17 +28,19 @@ class ProductController extends ChangeNotifier {
           await _productService.getProducts(page: _currentPage);
 
       if (fetchedProducts.isNotEmpty) {
-        if (isLoadMore) {
-          _products.addAll(fetchedProducts);
-        } else {
-          _products = fetchedProducts;
-        }
+        _allProducts.addAll(fetchedProducts);
         _currentPage++;
+
+        if (!isLoadMore) {
+          _displayedProducts = _allProducts.take(8).toList();
+        } else {
+          _displayedProducts = List.from(_allProducts);
+        }
       } else {
         hasMore = false;
       }
     } catch (e) {
-      _errorMessage = 'Terjadi kesalah saat mengambil produk';
+      _errorMessage = 'Terjadi kesalahan saat mengambil produk';
     }
 
     _isLoading = false;
