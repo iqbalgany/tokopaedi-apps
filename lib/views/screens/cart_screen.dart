@@ -75,7 +75,7 @@ class _CartScreenState extends State<CartScreen> {
 
     ///
     if (_errorMessage != null) {
-      return Scaffold(
+      return const Scaffold(
         body: Center(
           child: Text(
             'Loading...',

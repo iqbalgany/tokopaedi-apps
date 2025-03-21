@@ -22,10 +22,7 @@ class AuthController extends ChangeNotifier {
 
         if (token != null) {
           await StorageService.saveToken(token);
-        } else {
-          print("Token null, periksa response API.");
         }
-
         Navigator.pushReplacementNamed(context, AppRoutes.navbar);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

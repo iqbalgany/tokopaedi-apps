@@ -46,7 +46,6 @@ class ProductService {
 
       return products;
     } catch (e) {
-      print('Error fetching products: $e');
       rethrow;
     }
   }

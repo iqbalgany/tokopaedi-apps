@@ -7,6 +7,7 @@ class ProductController extends ChangeNotifier {
 
   final List<ProductModel> _allProducts = [];
   List<ProductModel> _displayedProducts = [];
+  List<ProductModel> _foundProducts = [];
   bool _isLoading = false;
   String _errorMessage = '';
   bool hasMore = true;

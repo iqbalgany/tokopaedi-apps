@@ -32,7 +32,6 @@ class UserController extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _error = 'Error : ${e.toString()}';
-      print('Error fetching user: $e');
     }
   }
 

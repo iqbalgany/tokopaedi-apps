@@ -72,7 +72,7 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
 
     ///
     if (_errorMessage != null) {
-      return Scaffold(
+      return const Scaffold(
         body: Center(
           child: Text(
             'Loading...',
@@ -189,7 +189,7 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          Container(
+                          SizedBox(
                             height: 200,
                             child: ListView.builder(
                               padding: const EdgeInsets.all(0),

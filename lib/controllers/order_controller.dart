@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_store_app/models/order_model.dart';
 import 'package:grocery_store_app/services/order_service.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../models/checkout_model.dart';
 
@@ -90,11 +89,6 @@ class OrderController extends ChangeNotifier {
     } catch (e) {
       debugPrint('fetch Error: $e');
     }
-  }
-
-  Future<void> openMidtransPayment(String url) async {
-    final Uri uri = Uri.parse(url);
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
   Future<void> fetchOrderDetail(int orderId) async {

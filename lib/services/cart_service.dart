@@ -42,7 +42,6 @@ class CartService {
         throw Exception('Failed to load carts');
       }
     } catch (e) {
-      print('Error fetching carts: $e');
       throw Exception('Failed to load carts');
     }
   }
@@ -89,7 +88,6 @@ class CartService {
         return false;
       }
     } catch (e) {
-      print('Error: $e');
       return false;
     }
   }

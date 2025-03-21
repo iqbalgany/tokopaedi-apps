@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:grocery_store_app/controllers/user_controller.dart';
 import 'package:grocery_store_app/models/user_model.dart';
 import 'package:grocery_store_app/views/widgets/profile_item.dart';
+import 'package:grocery_store_app/views/widgets/profile_shimmer_item.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ProfileScreen extends StatefulWidget {
   final UserModel? user;
@@ -18,8 +20,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = true;
   String? _errorMessage;
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
@@ -77,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       isScrollControlled: true,
       context: context,
       builder: (context) {
-        return Container(
+        return SizedBox(
           width: MediaQuery.sizeOf(context).width,
           height: 450,
           child: ListView(
@@ -222,22 +224,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Consumer<UserController>(
       builder: (context, userController, child) {
         ///
-        if (_isLoading) {
-          return const Scaffold(
-            body: Center(
-              child: Text(
-                'Loading...',
-                style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 14,
-                  color: Colors.black45,
-                ),
-              ),
-            ),
-          );
-        }
-
-        ///
         if (_errorMessage != null) {
           return Scaffold(
             body: Center(
@@ -257,39 +243,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ///
         final user = userController.user ?? widget.user;
         return Scaffold(
-          appBar: AppBar(
-            leading: const Icon(
-              Icons.abc_outlined,
-              color: Colors.white,
-            ),
-            actions: [
-              IconButton(
-                onPressed: () => _showUpdateBottomSheet(user!),
-                icon: const Icon(
-                  Icons.edit,
-                  color: Colors.green,
-                ),
-              ),
-            ],
-          ),
           body: SingleChildScrollView(
             child: Column(
               children: [
+                SizedBox(height: 30),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    onPressed: () => _showUpdateBottomSheet(user!),
+                    icon: const Icon(
+                      Icons.edit,
+                      color: Colors.green,
+                    ),
+                  ),
+                ),
+
                 ///
                 Align(
                   alignment: Alignment.center,
                   child: Column(
                     children: [
-                      Container(
-                        width: 170,
-                        height: 170,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              image: AssetImage('assets/profile_picture.jpeg'),
-                              fit: BoxFit.cover),
+                      if (user == null)
+                        Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Container(
+                            width: 170,
+                            height: 170,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      else
+                        Container(
+                          width: 170,
+                          height: 170,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image:
+                                    AssetImage('assets/profile_picture.jpeg'),
+                                fit: BoxFit.cover),
+                          ),
                         ),
-                      ),
                       const SizedBox(height: 13),
                     ],
                   ),
@@ -297,31 +295,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 32),
 
                 ///
-                ProfileItem(
-                  title: 'Your Name',
-                  icon: Icons.person_2_outlined,
-                  text: user!.name,
-                ),
+                if (user == null)
+                  const ProfileShimmerItem()
+                else
+                  ProfileItem(
+                    title: 'Your Name',
+                    icon: Icons.person_2_outlined,
+                    text: user.name,
+                  ),
                 const SizedBox(height: 20),
 
                 ///
-                ProfileItem(
-                  title: 'Your Email',
-                  icon: Icons.email_outlined,
-                  text: user.email,
-                ),
+                if (user == null)
+                  const ProfileShimmerItem()
+                else
+                  ProfileItem(
+                    title: 'Your Email',
+                    icon: Icons.email_outlined,
+                    text: user.email,
+                  ),
                 const SizedBox(height: 20),
 
                 ///
-                ProfileItem(
-                  title: 'Your Role',
-                  icon: Icons.chair_outlined,
-                  text: user.role!,
-                ),
+                if (user == null)
+                  const ProfileShimmerItem()
+                else
+                  ProfileItem(
+                    title: 'Your Role',
+                    icon: Icons.chair_outlined,
+                    text: user.role!,
+                  ),
                 const SizedBox(height: 20),
 
                 ///
-                if (user.createdAt != null)
+                if (user == null)
+                  const ProfileShimmerItem()
+                else if (user.createdAt != null)
                   ProfileItem(
                     title: 'Member Since',
                     icon: Icons.calendar_today,

@@ -5,6 +5,7 @@ import 'package:grocery_store_app/controllers/product_controller.dart';
 import 'package:grocery_store_app/models/product_model.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -59,12 +60,28 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           const SizedBox(height: 30),
           ListTile(
-            title: const Text(
-              'Good Morning, Mate',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                color: Colors.black,
+            title: TextField(
+              cursorColor: Colors.green,
+              decoration: InputDecoration(
+                hintText: 'Search Item',
+                hintStyle: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: Colors.black45,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  gapPadding: 15,
+                  borderSide: BorderSide(
+                    color: Colors.green,
+                  ),
+                ),
+                border: OutlineInputBorder(
+                  gapPadding: 15,
+                  borderSide: BorderSide(
+                    color: Colors.green,
+                  ),
+                ),
+                contentPadding: EdgeInsets.all(10),
               ),
             ),
             trailing: CartIcon(
@@ -76,8 +93,32 @@ class _HomeScreenState extends State<HomeScreen> {
             child: ListView.builder(
               padding: const EdgeInsets.all(0),
               controller: _scrollController,
-              itemCount: productController.products.length + 1,
+              itemCount: productController.products.isEmpty
+                  ? productController.products.length + 1
+                  : productController.products.length + 1,
               itemBuilder: (context, index) {
+                if (productController.products.isEmpty) {
+                  return Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 60,
+                            height: 60,
+                            color: Colors.white,
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                }
                 if (index < productController.products.length) {
                   ProductModel product = productController.products[index];
                   return Container(
@@ -181,14 +222,14 @@ class CartIcon extends StatelessWidget {
                 color: Colors.red,
                 borderRadius: BorderRadius.circular(10),
               ),
-              constraints: BoxConstraints(
+              constraints: const BoxConstraints(
                 minWidth: 18,
                 minHeight: 18,
               ),
               child: Text(
                 textAlign: TextAlign.center,
                 totalItems.toString(),
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
                   color: Colors.white,

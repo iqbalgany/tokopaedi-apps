@@ -69,12 +69,8 @@ class AuthService {
       );
 
       String? token = response.data['data']['access_token'];
-      if (token != null) {
-        await StorageService.saveToken(token);
-        print("Token berhasil disimpan: $token");
-      } else {
-        print("Token null, periksa response API.");
-      }
+
+      await StorageService.saveToken(token!);
 
       return response;
     } catch (e) {
