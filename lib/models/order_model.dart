@@ -1,4 +1,4 @@
-import 'package:grocery_store_app/model/order_item_model.dart';
+import 'package:grocery_store_app/models/order_item_model.dart';
 
 class OrderModel {
   final int? id;

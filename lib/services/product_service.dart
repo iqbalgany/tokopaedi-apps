@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:grocery_store_app/model/product_model.dart';
+import 'package:grocery_store_app/models/product_model.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../constants/constants.dart';

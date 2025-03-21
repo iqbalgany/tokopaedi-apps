@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_store_app/controllers/user_controller.dart';
-import 'package:grocery_store_app/model/user_model.dart';
+import 'package:grocery_store_app/models/user_model.dart';
 import 'package:grocery_store_app/views/widgets/profile_item.dart';
 import 'package:provider/provider.dart';
 
@@ -18,8 +18,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = true;
   String? _errorMessage;
-  TextEditingController nameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
@@ -57,8 +57,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _updateProfile() async {
-    final String name = nameController.text.trim();
-    final String password = passwordController.text.trim();
+    final String name = _nameController.text.trim();
+    final String password = _passwordController.text.trim();
 
     await Provider.of<UserController>(context, listen: false).updateUser(
       context: context,
@@ -71,6 +71,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showUpdateBottomSheet(UserModel user) {
+    _nameController.text = user.name;
+    _passwordController.clear();
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -114,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: TextField(
-                        controller: nameController,
+                        controller: _nameController,
                         decoration: const InputDecoration(
                           border: UnderlineInputBorder(
                             borderSide: BorderSide.none,
@@ -155,7 +157,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: TextField(
-                        controller: passwordController,
+                        controller: _passwordController,
                         obscureText: _obscurePassword,
                         decoration: InputDecoration(
                           border: const UnderlineInputBorder(
@@ -262,8 +264,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             actions: [
               IconButton(
-                onPressed:
-                    user != null ? () => _showUpdateBottomSheet(user) : null,
+                onPressed: () => _showUpdateBottomSheet(user!),
                 icon: const Icon(
                   Icons.edit,
                   color: Colors.green,
@@ -331,7 +332,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ///
                 GestureDetector(
                   onTap: () {
-                    userController.signOut(context);
+                    // userController.signOut(context);
                   },
                   child: Container(
                     margin: const EdgeInsets.fromLTRB(24, 20, 24, 100),

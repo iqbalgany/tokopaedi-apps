@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:grocery_store_app/constants/constants.dart';
-import 'package:grocery_store_app/model/order_model.dart';
+import 'package:grocery_store_app/models/order_model.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-import '../model/checkout_model.dart';
+import '../models/checkout_model.dart';
 import 'storage_service.dart';
 
 class OrderService {

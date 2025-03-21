@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:grocery_store_app/model/product_model.dart';
+import 'package:grocery_store_app/models/product_model.dart';
 import 'package:grocery_store_app/services/product_service.dart';
 
 class ProductController extends ChangeNotifier {

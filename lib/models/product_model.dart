@@ -1,4 +1,4 @@
-import 'package:grocery_store_app/model/category_model.dart';
+import 'package:grocery_store_app/models/category_model.dart';
 
 class ProductModel {
   final int? id;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_store_app/model/cart_model.dart';
+import 'package:grocery_store_app/models/cart_model.dart';
 import 'package:grocery_store_app/services/cart_service.dart';
 
-import '../model/product_model.dart';
+import '../models/product_model.dart';
 
 class CartController extends ChangeNotifier {
   final CartService _cartService = CartService();
@@ -10,6 +10,10 @@ class CartController extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
   String? _message;
+  int get totalItems => _carts.fold(
+        0,
+        (sum, item) => sum + (item.quantity ?? 0),
+      );
 
   List<CartModel> get carts => _carts;
   bool get isLoading => _isLoading;
@@ -69,10 +73,12 @@ class CartController extends ChangeNotifier {
   }
 
   void decreaseQuantity(int index) {
-    if ((_carts[index].quantity ?? 0) > 1) {
-      _carts[index].quantity = (_carts[index].quantity ?? 1) - 1;
-      notifyListeners();
+    if (_carts[index].quantity! > 1) {
+      _carts[index].quantity = _carts[index].quantity! - 1;
+    } else {
+      carts.removeAt(index);
     }
+    notifyListeners();
   }
 
   double getTotalPrice() {

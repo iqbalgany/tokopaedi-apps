@@ -16,20 +16,75 @@ class DetailOrderScreen extends StatefulWidget {
 }
 
 class _DetailOrderScreenState extends State<DetailOrderScreen> {
+  bool _isLoading = true;
+  String? _errorMessage;
   @override
   void initState() {
     super.initState();
-    Future.delayed(
-      Duration.zero,
-      () {
-        Provider.of<OrderController>(context, listen: false)
-            .fetchOrderDetail(widget.orderId!);
-      },
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadDetailOrder();
+    });
+  }
+
+  void loadDetailOrder() async {
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+    }
+
+    try {
+      await Provider.of<OrderController>(context, listen: false)
+          .fetchOrderDetail(widget.orderId!);
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'Failed to load Detail Order: ${e.toString()}';
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    ///
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: Text(
+            'Loading...',
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
+              color: Colors.black45,
+            ),
+          ),
+        ),
+      );
+    }
+
+    ///
+    if (_errorMessage != null) {
+      return Scaffold(
+        body: Center(
+          child: Text(
+            'Loading...',
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
+              color: Colors.black45,
+            ),
+          ),
+        ),
+      );
+    }
     return Scaffold(
       body: Consumer<OrderController>(
         builder: (context, orderDetailController, _) {

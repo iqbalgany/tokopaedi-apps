@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_store_app/constants/app_routes.dart';
-import 'package:grocery_store_app/model/order_model.dart';
+import 'package:grocery_store_app/models/order_model.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewScreen extends StatefulWidget {
   final OrderModel? order;
+  final String? midtransUrl;
   const WebViewScreen({
     super.key,
     this.order,
+    this.midtransUrl,
   });
 
   @override
@@ -20,33 +21,36 @@ class _WebViewScreenState extends State<WebViewScreen> {
   @override
   void initState() {
     super.initState();
-    controller =
-        WebViewController() // ✅ Isi variabel instance, bukan buat variabel baru
-          ..setJavaScriptMode(JavaScriptMode.unrestricted);
+    controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted);
 
-    controller.loadRequest(Uri.parse(widget.order!.midtransPaymentUrl!));
+    final String? url = widget.order?.midtransPaymentUrl ?? widget.midtransUrl;
+    if (url != null) {
+      controller.loadRequest(Uri.parse(url));
+    } else {
+      debugPrint("Error: URL pembayaran tidak tersedia");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.pushNamed(context, AppRoutes.navbar),
-          icon: const Icon(
-            Icons.arrow_back_rounded,
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(
+              Icons.arrow_back_rounded,
+            ),
+          ),
+          title: const Text(
+            'Payment',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Colors.black,
+            ),
           ),
         ),
-        title: const Text(
-          'Payment',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-            color: Colors.black,
-          ),
-        ),
-      ),
-      body: WebViewWidget(controller: controller),
-    );
+        body: WebViewWidget(controller: controller));
   }
 }

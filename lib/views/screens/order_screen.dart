@@ -114,14 +114,16 @@ class _OrderScreenState extends State<OrderScreen> {
                                   Container(
                                     padding: const EdgeInsets.all(5),
                                     decoration: BoxDecoration(
-                                        color: Colors.green[100],
+                                        color: orderController
+                                            .getStatusColor(order.status!),
                                         borderRadius: BorderRadius.circular(5)),
                                     child: Text(
                                       order.status!,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 12,
-                                        color: Colors.green,
+                                        color: orderController
+                                            .getStatusTextColor(order.status!),
                                       ),
                                     ),
                                   )

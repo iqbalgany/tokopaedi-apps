@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:grocery_store_app/constants/app_routes.dart';
 import 'package:grocery_store_app/controllers/cart_controller.dart';
 import 'package:grocery_store_app/controllers/product_controller.dart';
-import 'package:grocery_store_app/model/product_model.dart';
+import 'package:grocery_store_app/models/product_model.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -49,6 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    int totalItems = context.watch<CartController>().totalItems;
+
     final productController = Provider.of<ProductController>(context);
     final cartController = Provider.of<CartController>(context);
     return Scaffold(
@@ -65,9 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.black,
               ),
             ),
-            trailing: IconButton(
-              onPressed: () => Navigator.pushNamed(context, AppRoutes.cart),
-              icon: const Icon(Icons.shopping_basket_outlined),
+            trailing: CartIcon(
+              totalItems: totalItems,
             ),
           ),
           const Divider(),
@@ -75,8 +76,6 @@ class _HomeScreenState extends State<HomeScreen> {
             child: ListView.builder(
               padding: const EdgeInsets.all(0),
               controller: _scrollController,
-              shrinkWrap: true,
-              physics: const AlwaysScrollableScrollPhysics(),
               itemCount: productController.products.length + 1,
               itemBuilder: (context, index) {
                 if (index < productController.products.length) {
@@ -154,6 +153,50 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class CartIcon extends StatelessWidget {
+  final int totalItems;
+  const CartIcon({
+    super.key,
+    required this.totalItems,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        IconButton(
+          onPressed: () => Navigator.pushNamed(context, AppRoutes.cart),
+          icon: const Icon(Icons.shopping_basket_outlined),
+        ),
+        if (totalItems > 0)
+          Positioned(
+            right: 4,
+            top: 9,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              constraints: BoxConstraints(
+                minWidth: 18,
+                minHeight: 18,
+              ),
+              child: Text(
+                textAlign: TextAlign.center,
+                totalItems.toString(),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_store_app/controllers/cart_controller.dart';
 import 'package:grocery_store_app/controllers/order_controller.dart';
-import 'package:grocery_store_app/model/cart_model.dart';
+import 'package:grocery_store_app/models/cart_model.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
+import 'web_view_screen.dart';
 
 class CartScreen extends StatefulWidget {
   final CartModel? cartModel;
@@ -17,17 +19,75 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  bool _isLoading = true;
+  String? _errorMessage;
   @override
   void initState() {
     super.initState();
 
-    Future.delayed(Duration.zero, () {
-      Provider.of<CartController>(context, listen: false).fetchCarts();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadCart();
     });
+  }
+
+  void loadCart() async {
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+    }
+
+    try {
+      await Provider.of<CartController>(context, listen: false).fetchCarts();
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'Failed to load Carts: ${e.toString()}';
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    ///
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: Text(
+            'Loading...',
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
+              color: Colors.black45,
+            ),
+          ),
+        ),
+      );
+    }
+
+    ///
+    if (_errorMessage != null) {
+      return Scaffold(
+        body: Center(
+          child: Text(
+            'Loading...',
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
+              color: Colors.black45,
+            ),
+          ),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -169,11 +229,12 @@ class _CartScreenState extends State<CartScreen> {
                                           MainAxisAlignment.spaceAround,
                                       children: [
                                         IconButton(
-                                            onPressed: () {
-                                              cartController
-                                                  .decreaseQuantity(index);
-                                            },
-                                            icon: const Icon(Icons.remove)),
+                                          onPressed: () {
+                                            cartController
+                                                .decreaseQuantity(index);
+                                          },
+                                          icon: const Icon(Icons.remove),
+                                        ),
                                         Text(
                                           (cartItem.quantity!).toString(),
                                           style: const TextStyle(
@@ -220,10 +281,9 @@ class _CartScreenState extends State<CartScreen> {
                             ),
                           ),
                           Text(
-                            cartController.carts.isEmpty ||
-                                    orderController.checkout == null
-                                ? 'Rp0'
-                                : 'Rp${NumberFormat("#,###", "id_ID").format(cartController.getTotalPrice())}',
+                            'Rp${NumberFormat("#,###", "id_ID").format(
+                              cartController.getTotalPrice(),
+                            )}',
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -235,15 +295,35 @@ class _CartScreenState extends State<CartScreen> {
                       /// PAY NOW BUTTON
                       GestureDetector(
                         onTap: () async {
-                          await orderController.checkoutOrder(
-                              context, cartController.getTotalPrice());
-                          cartController.clearCart();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              duration: Duration(milliseconds: 100),
-                              content: Text('Checkout berhasil'),
-                            ),
+                          final orderUrl = await orderController.checkoutOrder(
+                            context,
+                            cartController.getTotalPrice(),
                           );
+
+                          if (orderUrl != null && orderUrl.isNotEmpty) {
+                            cartController.clearCart();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                duration: Duration(milliseconds: 100),
+                                content: Text('Checkout berhasil'),
+                              ),
+                            );
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => WebViewScreen(
+                                  midtransUrl: orderUrl,
+                                ),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Checkout gagal'),
+                              ),
+                            );
+                          }
                         },
                         child: Container(
                           padding: const EdgeInsets.all(12),

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:grocery_store_app/model/cart_model.dart';
+import 'package:grocery_store_app/models/cart_model.dart';
 import 'package:grocery_store_app/services/storage_service.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 

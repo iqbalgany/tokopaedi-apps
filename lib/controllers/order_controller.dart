@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_store_app/model/order_model.dart';
+import 'package:grocery_store_app/models/order_model.dart';
 import 'package:grocery_store_app/services/order_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../model/checkout_model.dart';
+import '../models/checkout_model.dart';
 
 class OrderController extends ChangeNotifier {
   final OrderService _orderService = OrderService();
@@ -19,6 +19,32 @@ class OrderController extends ChangeNotifier {
   List<OrderModel> get orders => _orders;
   String? get errorMessage => _errorMessage;
   OrderModel? get order => _order;
+
+  Color getStatusColor(String status) {
+    switch (status) {
+      case 'paid':
+        return Colors.green[100]!;
+      case 'pending':
+        return Colors.blue[100]!;
+      case 'cancelled':
+        return Colors.red[100]!;
+      default:
+        return Colors.grey[100]!;
+    }
+  }
+
+  Color getStatusTextColor(String status) {
+    switch (status) {
+      case 'paid':
+        return Colors.green;
+      case 'pending':
+        return Colors.blue;
+      case 'cancelled':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
 
   Future<void> getOrder() async {
     _isLoading = true;
@@ -36,7 +62,7 @@ class OrderController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> checkoutOrder(BuildContext context, double totalPrice) async {
+  Future<String?> checkoutOrder(BuildContext context, double totalPrice) async {
     _isLoading = true;
     notifyListeners();
 
@@ -44,13 +70,17 @@ class OrderController extends ChangeNotifier {
       _checkout = await _orderService.checkoutOrder(totalPrice);
       await _orderService.fetchOrder();
 
+      _isLoading = false;
       notifyListeners();
+
+      return _checkout!.midtransPaymentUrl;
     } catch (e) {
       debugPrint('checkout Error: $e');
     }
 
     _isLoading = false;
     notifyListeners();
+    return null;
   }
 
   Future<void> fetchOrders() async {

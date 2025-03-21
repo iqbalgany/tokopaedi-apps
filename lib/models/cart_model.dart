@@ -1,32 +1,29 @@
-import 'package:grocery_store_app/model/product_model.dart';
+import 'package:grocery_store_app/models/product_model.dart';
 
-class OrderItemModel {
+class CartModel {
   final int? id;
-  final int? orderId;
   final int? productId;
-  final int? quantity;
-  final int? price;
+  final int? userId;
+  int? quantity;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final ProductModel? product;
 
-  OrderItemModel({
+  CartModel({
     this.id,
-    this.orderId,
     this.productId,
+    this.userId,
     this.quantity,
-    this.price,
     this.createdAt,
     this.updatedAt,
     this.product,
   });
 
-  factory OrderItemModel.fromJson(Map<String, dynamic> json) => OrderItemModel(
+  factory CartModel.fromJson(Map<String, dynamic> json) => CartModel(
         id: json["id"],
-        orderId: json["order_id"],
         productId: json["product_id"],
+        userId: json["user_id"],
         quantity: json["quantity"],
-        price: json["price"],
         createdAt: json["created_at"] == null
             ? null
             : DateTime.parse(json["created_at"]),
@@ -40,10 +37,9 @@ class OrderItemModel {
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "order_id": orderId,
         "product_id": productId,
+        "user_id": userId,
         "quantity": quantity,
-        "price": price,
         "created_at": createdAt?.toIso8601String(),
         "updated_at": updatedAt?.toIso8601String(),
         "product": product?.toJson(),
