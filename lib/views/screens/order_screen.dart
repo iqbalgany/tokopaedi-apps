@@ -35,7 +35,7 @@ class _OrderScreenState extends State<OrderScreen> {
             child: ListView.builder(
               padding: const EdgeInsets.all(0),
               itemCount: orderController.orders.isEmpty
-                  ? orderController.orders.length
+                  ? 8
                   : orderController.orders.length,
               itemBuilder: (context, index) {
                 if (orderController.orders.isEmpty) {

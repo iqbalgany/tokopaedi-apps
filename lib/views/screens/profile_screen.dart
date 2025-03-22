@@ -263,7 +263,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   alignment: Alignment.center,
                   child: Column(
                     children: [
-                      if (user == null)
+                      if (_isLoading)
                         Shimmer.fromColors(
                           baseColor: Colors.grey[300]!,
                           highlightColor: Colors.grey[100]!,
@@ -295,42 +295,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 32),
 
                 ///
-                if (user == null)
+                if (_isLoading)
                   const ProfileShimmerItem()
                 else
                   ProfileItem(
                     title: 'Your Name',
                     icon: Icons.person_2_outlined,
-                    text: user.name,
+                    text: user!.name,
                   ),
                 const SizedBox(height: 20),
 
                 ///
-                if (user == null)
+                if (_isLoading)
                   const ProfileShimmerItem()
                 else
                   ProfileItem(
                     title: 'Your Email',
                     icon: Icons.email_outlined,
-                    text: user.email,
+                    text: user!.email,
                   ),
                 const SizedBox(height: 20),
 
                 ///
-                if (user == null)
+                if (_isLoading)
                   const ProfileShimmerItem()
                 else
                   ProfileItem(
                     title: 'Your Role',
                     icon: Icons.chair_outlined,
-                    text: user.role!,
+                    text: user!.role!,
                   ),
                 const SizedBox(height: 20),
 
                 ///
-                if (user == null)
+                if (_isLoading)
                   const ProfileShimmerItem()
-                else if (user.createdAt != null)
+                else if (user!.createdAt != null)
                   ProfileItem(
                     title: 'Member Since',
                     icon: Icons.calendar_today,

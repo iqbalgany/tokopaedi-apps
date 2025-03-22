@@ -15,16 +15,42 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool _isLoading = true;
+  String? _errorMessage;
   final ScrollController _scrollController = ScrollController();
+
+  void loadCart() async {
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+    }
+
+    try {
+      await Provider.of<ProductController>(context, listen: false)
+          .fetchProducts();
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'Failed to load Carts: ${e.toString()}';
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final productController =
-          Provider.of<ProductController>(context, listen: false);
-      await productController.fetchProducts();
+      loadCart();
     });
 
     _scrollController.addListener(
@@ -61,6 +87,10 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 30),
           ListTile(
             title: TextField(
+              onChanged: (value) {
+                Provider.of<ProductController>(context, listen: false)
+                    .runFilter(value);
+              },
               cursorColor: Colors.green,
               decoration: InputDecoration(
                 hintText: 'Search Item',
@@ -93,11 +123,9 @@ class _HomeScreenState extends State<HomeScreen> {
             child: ListView.builder(
               padding: const EdgeInsets.all(0),
               controller: _scrollController,
-              itemCount: productController.products.isEmpty
-                  ? productController.products.length + 1
-                  : productController.products.length + 1,
+              itemCount: _isLoading ? 8 : productController.products.length,
               itemBuilder: (context, index) {
-                if (productController.products.isEmpty) {
+                if (_isLoading) {
                   return Shimmer.fromColors(
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
@@ -118,8 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   );
-                }
-                if (index < productController.products.length) {
+                } else {
                   ProductModel product = productController.products[index];
                   return Container(
                     margin: const EdgeInsets.all(10),
@@ -184,10 +211,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   );
-                } else {
-                  return productController.hasMore
-                      ? const Center(child: CircularProgressIndicator())
-                      : const SizedBox();
                 }
               },
             ),

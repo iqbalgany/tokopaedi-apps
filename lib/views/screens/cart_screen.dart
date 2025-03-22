@@ -4,6 +4,7 @@ import 'package:grocery_store_app/controllers/order_controller.dart';
 import 'package:grocery_store_app/models/cart_model.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'web_view_screen.dart';
 
@@ -57,37 +58,6 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ///
-    if (_isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: Text(
-            'Loading...',
-            style: TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 14,
-              color: Colors.black45,
-            ),
-          ),
-        ),
-      );
-    }
-
-    ///
-    if (_errorMessage != null) {
-      return const Scaffold(
-        body: Center(
-          child: Text(
-            'Loading...',
-            style: TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 14,
-              color: Colors.black45,
-            ),
-          ),
-        ),
-      );
-    }
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -135,127 +105,148 @@ class _CartScreenState extends State<CartScreen> {
                       )
                     : ListView.builder(
                         padding: const EdgeInsets.all(0),
-                        itemCount: cartController.carts.length,
+                        itemCount: _isLoading ? 5 : cartController.carts.length,
                         itemBuilder: (context, index) {
                           final cartItem = cartController.carts[index];
                           int cartId = cartItem.id!;
-                          return Container(
-                            padding: const EdgeInsets.all(10),
-                            margin: const EdgeInsets.symmetric(vertical: 5),
-                            width: MediaQuery.sizeOf(context).width,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 0.3,
-                                color: Colors.green,
+                          if (_isLoading) {
+                            return Shimmer.fromColors(
+                              baseColor: Colors.grey[300]!,
+                              highlightColor: Colors.grey[100]!,
+                              child: Container(
+                                padding: const EdgeInsets.all(10),
+                                margin: const EdgeInsets.symmetric(vertical: 5),
+                                width: MediaQuery.sizeOf(context).width,
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 0.3,
+                                    color: Colors.green,
+                                  ),
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                            child: Row(
-                              children: [
-                                Image.network(
-                                  cartItem.product!.image ??
-                                      'https://via.placeholder.com/150',
-                                  width: 60,
-                                  fit: BoxFit.cover,
+                            );
+                          } else {
+                            return Container(
+                              padding: const EdgeInsets.all(10),
+                              margin: const EdgeInsets.symmetric(vertical: 5),
+                              width: MediaQuery.sizeOf(context).width,
+                              height: 120,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 0.3,
+                                  color: Colors.green,
                                 ),
-                                const SizedBox(width: 15),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      cartItem.product?.name ??
-                                          'Nama tidak tersedia',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16,
-                                        color: Colors.black45,
-                                      ),
-                                    ),
-                                    Text(
-                                      ('Rp${NumberFormat("#,###", "id_ID").format((cartItem.quantity ?? 0) * (cartItem.product?.price ?? 0))}')
-                                          .toString(),
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    IconButton(
-                                      onPressed: () async {
-                                        try {
-                                          await cartController
-                                              .removeItem(cartId);
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              duration:
-                                                  Duration(milliseconds: 100),
-                                              content: Text(
-                                                  'Item removed successfully'),
-                                            ),
-                                          );
-                                        } catch (e) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              duration:
-                                                  Duration(milliseconds: 100),
-                                              content:
-                                                  Text('Failed to remove item'),
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      icon: const Icon(Icons.delete_outline),
-                                    ),
-                                  ],
-                                ),
-                                const Spacer(),
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Container(
-                                    width: 130,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50),
-                                      border: Border.all(
-                                        width: 0.3,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {
-                                            cartController
-                                                .decreaseQuantity(index);
-                                          },
-                                          icon: const Icon(Icons.remove),
+                              ),
+                              child: Row(
+                                children: [
+                                  Image.network(
+                                    cartItem.product!.image ??
+                                        'https://via.placeholder.com/150',
+                                    width: 60,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  const SizedBox(width: 15),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        cartItem.product?.name ??
+                                            'Nama tidak tersedia',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 16,
+                                          color: Colors.black45,
                                         ),
-                                        Text(
-                                          (cartItem.quantity!).toString(),
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 14,
-                                            color: Colors.black45,
-                                          ),
+                                      ),
+                                      Text(
+                                        ('Rp${NumberFormat("#,###", "id_ID").format((cartItem.quantity ?? 0) * (cartItem.product?.price ?? 0))}')
+                                            .toString(),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          color: Colors.black,
                                         ),
-                                        IconButton(
+                                      ),
+                                      const Spacer(),
+                                      IconButton(
+                                        onPressed: () async {
+                                          try {
+                                            await cartController
+                                                .removeItem(cartId);
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                duration:
+                                                    Duration(milliseconds: 100),
+                                                content: Text(
+                                                    'Item removed successfully'),
+                                              ),
+                                            );
+                                          } catch (e) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                duration:
+                                                    Duration(milliseconds: 100),
+                                                content: Text(
+                                                    'Failed to remove item'),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        icon: const Icon(Icons.delete_outline),
+                                      ),
+                                    ],
+                                  ),
+                                  const Spacer(),
+                                  Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Container(
+                                      width: 130,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(50),
+                                        border: Border.all(
+                                          width: 0.3,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          IconButton(
                                             onPressed: () {
                                               cartController
-                                                  .increaseQuantity(index);
+                                                  .decreaseQuantity(index);
                                             },
-                                            icon: const Icon(Icons.add))
-                                      ],
+                                            icon: const Icon(Icons.remove),
+                                          ),
+                                          Text(
+                                            (cartItem.quantity!).toString(),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 14,
+                                              color: Colors.black45,
+                                            ),
+                                          ),
+                                          IconButton(
+                                              onPressed: () {
+                                                cartController
+                                                    .increaseQuantity(index);
+                                              },
+                                              icon: const Icon(Icons.add))
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
+                                ],
+                              ),
+                            );
+                          }
                         },
                       ),
               ),

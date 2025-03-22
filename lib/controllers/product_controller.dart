@@ -6,14 +6,14 @@ class ProductController extends ChangeNotifier {
   final ProductService _productService = ProductService();
 
   final List<ProductModel> _allProducts = [];
-  List<ProductModel> _displayedProducts = [];
-  List<ProductModel> _foundProducts = [];
+  List<ProductModel> _filteredProducts = [];
   bool _isLoading = false;
   String _errorMessage = '';
   bool hasMore = true;
   int _currentPage = 1;
 
-  List<ProductModel> get products => _displayedProducts;
+  List<ProductModel> get products =>
+      _filteredProducts.isNotEmpty ? _filteredProducts : _allProducts;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
 
@@ -31,12 +31,6 @@ class ProductController extends ChangeNotifier {
       if (fetchedProducts.isNotEmpty) {
         _allProducts.addAll(fetchedProducts);
         _currentPage++;
-
-        if (!isLoadMore) {
-          _displayedProducts = _allProducts.take(8).toList();
-        } else {
-          _displayedProducts = List.from(_allProducts);
-        }
       } else {
         hasMore = false;
       }
@@ -45,6 +39,21 @@ class ProductController extends ChangeNotifier {
     }
 
     _isLoading = false;
+    notifyListeners();
+  }
+
+  void runFilter(String enteredKeyword) {
+    if (enteredKeyword.isEmpty) {
+      _filteredProducts = [];
+    } else {
+      _filteredProducts = _allProducts
+          .where(
+            (product) => product.name!
+                .toLowerCase()
+                .contains(enteredKeyword.toLowerCase()),
+          )
+          .toList();
+    }
     notifyListeners();
   }
 }
