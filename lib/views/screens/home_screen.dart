@@ -16,14 +16,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = true;
-  String? _errorMessage;
   final ScrollController _scrollController = ScrollController();
 
   void loadCart() async {
     if (mounted) {
       setState(() {
         _isLoading = true;
-        _errorMessage = null;
       });
     }
 
@@ -31,11 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
       await Provider.of<ProductController>(context, listen: false)
           .fetchProducts();
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = 'Failed to load Carts: ${e.toString()}';
-        });
-      }
+      rethrow;
     } finally {
       if (mounted) {
         setState(() {
@@ -51,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       loadCart();
+      Provider.of<ProductController>(context, listen: false).fetchCategories();
     });
 
     _scrollController.addListener(
@@ -81,44 +76,95 @@ class _HomeScreenState extends State<HomeScreen> {
     final productController = Provider.of<ProductController>(context);
     final cartController = Provider.of<CartController>(context);
     return Scaffold(
+      appBar: AppBar(
+        title: TextField(
+          onChanged: (value) {
+            productController.runFilter(value);
+          },
+          cursorColor: Colors.green,
+          decoration: InputDecoration(
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.green,
+              ),
+            ),
+            prefixIcon: Icon(Icons.search),
+            hintText: 'Search Item',
+            hintStyle: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+              color: Colors.black45,
+            ),
+            focusedBorder: OutlineInputBorder(
+              gapPadding: 15,
+              borderSide: BorderSide(
+                color: Colors.green,
+              ),
+            ),
+            border: OutlineInputBorder(
+              gapPadding: 15,
+              borderSide: BorderSide(
+                color: Colors.green,
+              ),
+            ),
+            contentPadding: EdgeInsets.all(10),
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return Container(
+                    width: MediaQuery.sizeOf(context).width,
+                    height: 500,
+                    child: Consumer<ProductController>(
+                      builder: (context, controller, child) {
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: controller.categories.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {},
+                              child: Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 5),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 10),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.green),
+                                ),
+                                child: Text(
+                                  controller.categories[index].name,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  );
+                },
+              );
+            },
+            icon: Icon(Icons.menu),
+          ),
+          CartIcon(
+            totalItems: totalItems,
+          )
+        ],
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 30),
-          ListTile(
-            title: TextField(
-              onChanged: (value) {
-                Provider.of<ProductController>(context, listen: false)
-                    .runFilter(value);
-              },
-              cursorColor: Colors.green,
-              decoration: InputDecoration(
-                hintText: 'Search Item',
-                hintStyle: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                  color: Colors.black45,
-                ),
-                focusedBorder: OutlineInputBorder(
-                  gapPadding: 15,
-                  borderSide: BorderSide(
-                    color: Colors.green,
-                  ),
-                ),
-                border: OutlineInputBorder(
-                  gapPadding: 15,
-                  borderSide: BorderSide(
-                    color: Colors.green,
-                  ),
-                ),
-                contentPadding: EdgeInsets.all(10),
-              ),
-            ),
-            trailing: CartIcon(
-              totalItems: totalItems,
-            ),
-          ),
           const Divider(),
+          const SizedBox(height: 10),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(0),

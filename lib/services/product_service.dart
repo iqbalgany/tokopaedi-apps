@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:grocery_store_app/models/category_model.dart';
 import 'package:grocery_store_app/models/product_model.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
@@ -45,6 +46,20 @@ class ProductService {
           .toList();
 
       return products;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<CategoryModel>> getCategories() async {
+    try {
+      Response response = await dio.get('/categories');
+
+      List<CategoryModel> categories = (response.data as List)
+          .map((json) => CategoryModel.fromJson(json))
+          .toList();
+
+      return categories;
     } catch (e) {
       rethrow;
     }

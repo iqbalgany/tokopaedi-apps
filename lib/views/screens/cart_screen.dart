@@ -21,7 +21,6 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   bool _isLoading = true;
-  String? _errorMessage;
   @override
   void initState() {
     super.initState();
@@ -35,18 +34,13 @@ class _CartScreenState extends State<CartScreen> {
     if (mounted) {
       setState(() {
         _isLoading = true;
-        _errorMessage = null;
       });
     }
 
     try {
       await Provider.of<CartController>(context, listen: false).fetchCarts();
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = 'Failed to load Carts: ${e.toString()}';
-        });
-      }
+      rethrow;
     } finally {
       if (mounted) {
         setState(() {
