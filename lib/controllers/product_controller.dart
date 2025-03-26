@@ -6,43 +6,50 @@ import 'package:grocery_store_app/services/product_service.dart';
 class ProductController extends ChangeNotifier {
   final ProductService _productService = ProductService();
 
-  final List<ProductModel> _allProducts = [];
-  List<ProductModel> _filteredProducts = [];
+  List<ProductModel> _products = [];
   List<CategoryModel> _categories = [];
   bool _isLoading = false;
-  String _errorMessage = '';
   bool hasMore = true;
   int _currentPage = 1;
-  String? _selectedCategory;
 
-  List<ProductModel> get products =>
-      _filteredProducts.isNotEmpty ? _filteredProducts : _allProducts;
+  List<ProductModel> get products => _products;
   List<CategoryModel> get categories => _categories;
   bool get isLoading => _isLoading;
-  String get errorMessage => _errorMessage;
-  String? get selectedCategory => _selectedCategory;
 
   Future<void> fetchProducts({
     bool isLoadMore = false,
+    String? name,
+    String? categoryId,
+    String? minPrice,
+    String? maxPrice,
   }) async {
     if (_isLoading || !hasMore) return;
 
     _isLoading = true;
-    _errorMessage = '';
     notifyListeners();
 
     try {
-      List<ProductModel> fetchedProducts =
-          await _productService.getProducts(page: _currentPage);
+      List<ProductModel> fetchedProducts = await _productService.getProducts(
+        page: isLoadMore ? _currentPage : 1,
+        name: name,
+        categoryId: categoryId,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+      );
 
-      if (fetchedProducts.isNotEmpty) {
-        _allProducts.addAll(fetchedProducts);
-        _currentPage++;
+      if (!isLoadMore) {
+        _products = fetchedProducts;
+        _currentPage = 2;
       } else {
-        hasMore = false;
+        if (fetchedProducts.isNotEmpty) {
+          _products.addAll(fetchedProducts);
+          _currentPage++;
+        } else {
+          hasMore = false;
+        }
       }
     } catch (e) {
-      _errorMessage = 'Terjadi kesalahan saat mengambil produk';
+      throw 'Error fetching products: $e';
     }
 
     _isLoading = false;
@@ -51,46 +58,30 @@ class ProductController extends ChangeNotifier {
 
   Future<void> fetchCategories() async {
     _isLoading = true;
-    _errorMessage = '';
     notifyListeners();
 
     try {
-      List<CategoryModel> fetchedCategories =
-          await _productService.getCategories();
-
-      _categories = fetchedCategories;
+      _categories = await _productService.getCategories();
       notifyListeners();
     } catch (e) {
-      _errorMessage = 'Gagal mengambil kategori';
+      throw 'Error fetching categories: $e';
     }
 
     _isLoading = false;
     notifyListeners();
   }
 
-  void runFilter(String enteredKeyword) async {
-    _isLoading = true;
-    notifyListeners();
-
-    try {
-      _filteredProducts =
-          await _productService.getProducts(name: enteredKeyword);
-    } catch (e) {
-      _errorMessage = 'Terjadi kesalahan saat mengambil produk';
-    }
-
-    _isLoading = false;
-    notifyListeners();
-  }
-
-  void selectCategory(String? category) {
-    _selectedCategory = category;
-    _filteredProducts = category == null
-        ? _allProducts
-        : _allProducts
-            .where((product) => product.category?.name == category)
-            .toList();
-
-    notifyListeners();
+  Future<void> filterProducts({
+    String? name,
+    String? categoryId,
+    String? minPrice,
+    String? maxPrice,
+  }) async {
+    await fetchProducts(
+      name: name,
+      categoryId: categoryId,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+    );
   }
 }

@@ -75,7 +75,7 @@ class _CartScreenState extends State<CartScreen> {
             children: [
               const Divider(),
               Expanded(
-                child: cartController.carts.isEmpty
+                child: (cartController.carts ?? []).isEmpty
                     ? const Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -102,7 +102,7 @@ class _CartScreenState extends State<CartScreen> {
                         itemCount: _isLoading ? 5 : cartController.carts.length,
                         itemBuilder: (context, index) {
                           final cartItem = cartController.carts[index];
-                          int cartId = cartItem.id!;
+                          int? cartId = cartItem.id;
                           if (_isLoading) {
                             return Shimmer.fromColors(
                               baseColor: Colors.grey[300]!,
@@ -136,7 +136,7 @@ class _CartScreenState extends State<CartScreen> {
                               child: Row(
                                 children: [
                                   Image.network(
-                                    cartItem.product!.image ??
+                                    cartItem.product?.image ??
                                         'https://via.placeholder.com/150',
                                     width: 60,
                                     fit: BoxFit.cover,
@@ -169,7 +169,7 @@ class _CartScreenState extends State<CartScreen> {
                                         onPressed: () async {
                                           try {
                                             await cartController
-                                                .removeItem(cartId);
+                                                .removeItem(cartId!);
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               const SnackBar(

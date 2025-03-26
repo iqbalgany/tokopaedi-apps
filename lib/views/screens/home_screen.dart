@@ -3,6 +3,7 @@ import 'package:grocery_store_app/constants/app_routes.dart';
 import 'package:grocery_store_app/controllers/cart_controller.dart';
 import 'package:grocery_store_app/controllers/product_controller.dart';
 import 'package:grocery_store_app/models/product_model.dart';
+import 'package:grocery_store_app/views/widgets/filter_bottom_sheet.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -17,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = true;
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController _searchController = TextEditingController();
 
   void loadCart() async {
     if (mounted) {
@@ -63,8 +65,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _onSearchChanged() {
+    final productController =
+        Provider.of<ProductController>(context, listen: false);
+    productController.filterProducts(name: _searchController.text);
+  }
+
   @override
   void dispose() {
+    _searchController.removeListener(_onSearchChanged);
     _scrollController.dispose();
     super.dispose();
   }
@@ -78,9 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: TextField(
-          onChanged: (value) {
-            productController.runFilter(value);
-          },
+          controller: _searchController,
           cursorColor: Colors.green,
           decoration: InputDecoration(
             enabledBorder: OutlineInputBorder(
@@ -116,40 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
               showModalBottomSheet(
                 context: context,
                 builder: (context) {
-                  return Container(
-                    width: MediaQuery.sizeOf(context).width,
-                    height: 500,
-                    child: Consumer<ProductController>(
-                      builder: (context, controller, child) {
-                        return ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: controller.categories.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {},
-                              child: Container(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 5),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.green),
-                                ),
-                                child: Text(
-                                  controller.categories[index].name,
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  );
+                  return FilterBottomSheet();
                 },
               );
             },
