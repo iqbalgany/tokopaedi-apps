@@ -86,6 +86,24 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
       );
     }
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        // systemOverlayStyle: SystemUiOverlayStyle.dark,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+          ),
+        ),
+        title: Text(
+          'Detail Order',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: Colors.black,
+          ),
+        ),
+      ),
       body: Consumer<OrderController>(
         builder: (context, orderDetailController, _) {
           final order = orderDetailController.order;
@@ -95,24 +113,6 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 50),
-                    ListTile(
-                      leading: IconButton(
-                          onPressed: () => Navigator.pop(context),
-                          icon: const Icon(
-                            Icons.arrow_back_rounded,
-                          )),
-                      title: const Text(
-                        'Detail Order',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    const Divider(),
-
                     ///
                     Container(
                       padding: const EdgeInsets.all(20),
@@ -190,11 +190,10 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
                           ),
                           const SizedBox(height: 20),
                           SizedBox(
-                            height: 200,
                             child: ListView.builder(
                               padding: const EdgeInsets.all(0),
                               shrinkWrap: true,
-                              physics: const BouncingScrollPhysics(),
+                              physics: const NeverScrollableScrollPhysics(),
                               itemCount: order.orderItems!.length,
                               itemBuilder: (context, index) {
                                 return Padding(
@@ -316,7 +315,8 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
                                 ),
                               ),
                             ],
-                          )
+                          ),
+                          SizedBox(height: 80),
                         ],
                       ),
                     ),

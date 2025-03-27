@@ -56,12 +56,12 @@ class _OrderScreenState extends State<OrderScreen> {
                       child: Column(
                         children: [
                           Container(
-                            width: 30,
+                            width: 100,
                             height: 30,
                             color: Colors.white,
                           ),
                           Container(
-                            width: 50,
+                            width: 100,
                             height: 20,
                             color: Colors.white,
                           ),

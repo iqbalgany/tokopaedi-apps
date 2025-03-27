@@ -85,6 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final productController = Provider.of<ProductController>(context);
     final cartController = Provider.of<CartController>(context);
+    _searchController.text = productController.searchQuery ?? '';
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: GestureDetector(

@@ -85,14 +85,24 @@ class _NavbarState extends State<Navbar> {
           children: [
             ///
             navbarItem(
-                icon: Icons.shopping_basket_outlined, index: 0, text: 'Shop'),
-
-            ///
-            navbarItem(icon: Icons.notes_rounded, index: 1, text: 'Order'),
+              icon: Icons.shopping_basket_outlined,
+              index: 0,
+              text: 'Shop',
+            ),
 
             ///
             navbarItem(
-                icon: Icons.account_circle_outlined, index: 2, text: 'Profile'),
+              icon: Icons.notes_rounded,
+              index: 1,
+              text: 'Order',
+            ),
+
+            ///
+            navbarItem(
+              icon: Icons.account_circle_outlined,
+              index: 2,
+              text: 'Profile',
+            ),
           ],
         ),
       ),

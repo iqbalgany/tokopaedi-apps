@@ -33,7 +33,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
             if (!_isMidtransSuccessUrl(request.url)) {
               Navigator.pushNamed(context, AppRoutes.navbar,
                   arguments: {'index': 1});
-              // Navigator.pop(context);
               return NavigationDecision.prevent;
             }
             return NavigationDecision.navigate;
@@ -53,17 +52,27 @@ class _WebViewScreenState extends State<WebViewScreen> {
     return url.contains('success');
   }
 
+  bool hasNavigated = false;
+
   void _checkMidtransCallback(String url) {
-    if (url.contains('finish') || url.contains('return')) {
-      Navigator.pushNamed(context, AppRoutes.navbar, arguments: {'index': 1});
-    } else if (_isMidtransSuccessUrl(url)) {
-      Future.delayed(
-        const Duration(seconds: 5),
-        () {
-          Navigator.pushNamed(context, AppRoutes.navbar,
-              arguments: {'index': 1});
-        },
-      );
+    if (!hasNavigated) {
+      hasNavigated = true;
+      if (url.contains('finish') || url.contains('return')) {
+        Navigator.pushNamed(context, AppRoutes.navbar, arguments: {'index': 1});
+      } else if (_isMidtransSuccessUrl(url) &&
+          !url.contains('finish') &&
+          !url.contains('return')) {
+        Future.delayed(
+          const Duration(seconds: 5),
+          () {
+            if (!hasNavigated) {
+              hasNavigated = true;
+              Navigator.pushNamed(context, AppRoutes.navbar,
+                  arguments: {'index': 1});
+            }
+          },
+        );
+      }
     }
   }
 

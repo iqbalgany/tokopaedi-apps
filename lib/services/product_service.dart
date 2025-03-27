@@ -1,30 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:grocery_store_app/helper/dio_client.dart';
 import 'package:grocery_store_app/models/category_model.dart';
 import 'package:grocery_store_app/models/product_model.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-
-import '../constants/constants.dart';
 
 class ProductService {
-  Dio _dio() {
-    final options = BaseOptions(
-      baseUrl: '$baseURL/api',
-      followRedirects: false,
-    );
-
-    var dio = Dio(options);
-
-    dio.interceptors.add(PrettyDioLogger(
-      requestBody: true,
-      requestHeader: true,
-      maxWidth: 134,
-    ));
-
-    return dio;
-  }
-
-  Dio get dio => _dio();
-
   Future<List<ProductModel>> getProducts({
     int page = 1,
     String? name,
@@ -33,7 +12,8 @@ class ProductService {
     String? maxPrice,
   }) async {
     try {
-      Response response = await dio.get('/products', queryParameters: {
+      Response response =
+          await DioClient.instance.get('/products', queryParameters: {
         'page': page,
         'name': name,
         'category_id': categoryId,
@@ -53,7 +33,7 @@ class ProductService {
 
   Future<List<CategoryModel>> getCategories() async {
     try {
-      Response response = await dio.get('/categories');
+      Response response = await DioClient.instance.get('/categories');
 
       List<CategoryModel> categories = (response.data as List)
           .map((json) => CategoryModel.fromJson(json))

@@ -29,7 +29,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final productController = Provider.of<ProductController>(context);
+    final productController =
+        Provider.of<ProductController>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -46,13 +47,46 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'Filter',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: Colors.black,
-            ),
+          Row(
+            children: [
+              const Text(
+                'Filter',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.black,
+                ),
+              ),
+              Spacer(),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedCategories.clear();
+                    _minPriceController.clear();
+                    _maxPriceController.clear();
+                  });
+                  productController.clearFilters();
+                },
+                child: Container(
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.green,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.green,
+                  ),
+                  child: Text(
+                    'Clear',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: 12,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              )
+            ],
           ),
           const SizedBox(height: 20),
           SizedBox(
@@ -149,15 +183,16 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           GestureDetector(
             onTap: () {
               productController.filterProducts(
+                name: productController.searchQuery,
                 categoryId: selectedCategories.isNotEmpty
                     ? selectedCategories.join(',')
-                    : null,
+                    : productController.selectedCategory,
                 minPrice: _minPriceController.text.isNotEmpty
                     ? _minPriceController.text
-                    : null,
+                    : productController.minPrice,
                 maxPrice: _maxPriceController.text.isNotEmpty
                     ? _maxPriceController.text
-                    : null,
+                    : productController.maxPrice,
               );
               Navigator.pop(context);
             },

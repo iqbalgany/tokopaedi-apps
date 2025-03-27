@@ -1,35 +1,14 @@
 import 'package:dio/dio.dart';
+import 'package:grocery_store_app/helper/dio_client.dart';
 import 'package:grocery_store_app/models/cart_model.dart';
 import 'package:grocery_store_app/services/storage_service.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-
-import '../constants/constants.dart';
 
 class CartService {
-  Dio _dio() {
-    final options = BaseOptions(
-      baseUrl: '$baseURL/api',
-      followRedirects: false,
-    );
-
-    var dio = Dio(options);
-
-    dio.interceptors.add(PrettyDioLogger(
-      requestBody: true,
-      requestHeader: true,
-      maxWidth: 134,
-    ));
-
-    return dio;
-  }
-
-  Dio get dio => _dio();
-
   Future<List<CartModel>> getCarts() async {
     String? token = await StorageService.getToken();
 
     try {
-      Response response = await dio.get(
+      Response response = await DioClient.instance.get(
         '/carts',
         options: Options(
           headers: {'Authorization': 'Bearer $token'},
@@ -50,7 +29,7 @@ class CartService {
     String? token = await StorageService.getToken();
 
     try {
-      Response response = await dio.post(
+      Response response = await DioClient.instance.post(
         '/carts',
         options: Options(headers: {
           'Authorization': 'Bearer $token',
@@ -71,7 +50,7 @@ class CartService {
     String? token = await StorageService.getToken();
 
     try {
-      Response response = await dio.post(
+      Response response = await DioClient.instance.post(
         '/carts/remove',
         options: Options(
           headers: {

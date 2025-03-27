@@ -1,35 +1,15 @@
 import 'package:dio/dio.dart';
-import 'package:grocery_store_app/constants/constants.dart';
+import 'package:grocery_store_app/helper/dio_client.dart';
 import 'package:grocery_store_app/models/order_model.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../models/checkout_model.dart';
 import 'storage_service.dart';
 
 class OrderService {
-  Dio _dio() {
-    final options = BaseOptions(
-      baseUrl: '$baseURL/api',
-      followRedirects: false,
-    );
-
-    var dio = Dio(options);
-
-    dio.interceptors.add(PrettyDioLogger(
-      requestBody: true,
-      requestHeader: true,
-      maxWidth: 134,
-    ));
-
-    return dio;
-  }
-
-  Dio get dio => _dio();
-
   Future<List<OrderModel>> fetchOrder() async {
     String? token = await StorageService.getToken();
     try {
-      Response response = await dio.get('/orders',
+      Response response = await DioClient.instance.get('/orders',
           options: Options(headers: {
             'Authorization': 'Bearer $token',
             'Accept': 'application/json',
@@ -49,7 +29,7 @@ class OrderService {
     String? token = await StorageService.getToken();
 
     try {
-      Response response = await dio.post(
+      Response response = await DioClient.instance.post(
         '/orders',
         data: {
           'total_price': totalPrice,
@@ -70,7 +50,7 @@ class OrderService {
   Future<OrderModel?> getOrderDetail(int orderId) async {
     String? token = await StorageService.getToken();
     try {
-      Response response = await dio.get(
+      Response response = await DioClient.instance.get(
         '/orders/$orderId',
         options: Options(
           headers: {

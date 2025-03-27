@@ -86,18 +86,30 @@ class ProductController extends ChangeNotifier {
   }) {
     _debouncer.run(
       () {
-        _searchQuery = name;
-        _selectedCategory = categoryId;
-        _minPrice = minPrice;
-        _maxPrice = maxPrice;
+        _searchQuery = name ?? _searchQuery;
+        _selectedCategory = categoryId ?? _selectedCategory;
+        _minPrice = minPrice ?? _minPrice;
+        _maxPrice = maxPrice ?? _maxPrice;
         hasMore = true;
-        _currentPage = 1;
 
+        _currentPage = 1;
         _products = [];
         notifyListeners();
 
         fetchProducts(isLoadMore: false);
       },
     );
+  }
+
+  void clearFilters({bool notify = true}) {
+    _searchQuery = null;
+    _selectedCategory = null;
+    _minPrice = null;
+    _maxPrice = null;
+    hasMore = true;
+
+    _currentPage = 1;
+
+    notifyListeners();
   }
 }
