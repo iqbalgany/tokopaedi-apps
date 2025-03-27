@@ -81,8 +81,8 @@ class _OrderScreenState extends State<OrderScreen> {
                     ),
                   ),
                   child: Container(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    margin: EdgeInsets.fromLTRB(10, 5, 10,
+                        index == orderController.orders.length - 1 ? 100 : 5),
                     padding: const EdgeInsets.all(15),
                     width: MediaQuery.sizeOf(context).width,
                     decoration: BoxDecoration(
@@ -203,7 +203,6 @@ class _OrderScreenState extends State<OrderScreen> {
               },
             ),
           ),
-          const SizedBox(height: 100),
         ],
       ),
     );

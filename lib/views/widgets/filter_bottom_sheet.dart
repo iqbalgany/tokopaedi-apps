@@ -13,11 +13,25 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   final TextEditingController _minPriceController = TextEditingController();
   final TextEditingController _maxPriceController = TextEditingController();
   Set<String> selectedCategories = {};
+
+  @override
+  void initState() {
+    super.initState();
+
+    final productController =
+        Provider.of<ProductController>(context, listen: false);
+
+    selectedCategories =
+        Set.from(productController.selectedCategory?.split(',') ?? []);
+    _minPriceController.text = productController.minPrice ?? '';
+    _maxPriceController.text = productController.maxPrice ?? '';
+  }
+
   @override
   Widget build(BuildContext context) {
     final productController = Provider.of<ProductController>(context);
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -32,7 +46,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             ),
           ),
           const SizedBox(height: 10),
-          Text(
+          const Text(
             'Filter',
             style: TextStyle(
               fontWeight: FontWeight.bold,
@@ -40,7 +54,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               color: Colors.black,
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           SizedBox(
             height: 40,
             child: ListView.builder(
@@ -48,12 +62,21 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               itemCount: productController.categories.length,
               itemBuilder: (context, index) {
                 final category = productController.categories[index];
-                final isSelected = selectedCategories.contains(category.id);
+                final isSelected =
+                    selectedCategories.contains(category.id.toString());
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    setState(() {
+                      if (selectedCategories.contains(category.id.toString())) {
+                        selectedCategories.remove(category.id.toString());
+                      } else {
+                        selectedCategories.add(category.id.toString());
+                      }
+                    });
+                  },
                   child: Container(
-                    margin: EdgeInsets.only(right: 20),
-                    padding: EdgeInsets.all(10),
+                    margin: const EdgeInsets.only(right: 20),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: Colors.green,
@@ -72,7 +95,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               },
             ),
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           Row(
             children: [
               Expanded(
@@ -81,12 +104,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     labelText: 'Min Price',
-                    focusedBorder: OutlineInputBorder(
+                    focusedBorder: const OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Colors.green,
                       ),
                     ),
-                    enabledBorder: OutlineInputBorder(
+                    enabledBorder: const OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Colors.green,
                       ),
@@ -97,19 +120,19 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   ),
                 ),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Expanded(
                 child: TextField(
                   controller: _maxPriceController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     labelText: 'Max Price',
-                    focusedBorder: OutlineInputBorder(
+                    focusedBorder: const OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Colors.green,
                       ),
                     ),
-                    enabledBorder: OutlineInputBorder(
+                    enabledBorder: const OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Colors.green,
                       ),
@@ -122,7 +145,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               ),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           GestureDetector(
             onTap: () {
               productController.filterProducts(

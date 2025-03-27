@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_store_app/constants/app_routes.dart';
 import 'package:grocery_store_app/models/order_model.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -22,7 +23,23 @@ class _WebViewScreenState extends State<WebViewScreen> {
   void initState() {
     super.initState();
     controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted);
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (String url) {
+            _checkMidtransCallback(url);
+          },
+          onNavigationRequest: (NavigationRequest request) {
+            if (!_isMidtransSuccessUrl(request.url)) {
+              Navigator.pushNamed(context, AppRoutes.navbar,
+                  arguments: {'index': 1});
+              // Navigator.pop(context);
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
+          },
+        ),
+      );
 
     final String? url = widget.order?.midtransPaymentUrl ?? widget.midtransUrl;
     if (url != null) {
@@ -32,25 +49,47 @@ class _WebViewScreenState extends State<WebViewScreen> {
     }
   }
 
+  bool _isMidtransSuccessUrl(String url) {
+    return url.contains('success');
+  }
+
+  void _checkMidtransCallback(String url) {
+    if (url.contains('finish') || url.contains('return')) {
+      Navigator.pushNamed(context, AppRoutes.navbar, arguments: {'index': 1});
+    } else if (_isMidtransSuccessUrl(url)) {
+      Future.delayed(
+        const Duration(seconds: 5),
+        () {
+          Navigator.pushNamed(context, AppRoutes.navbar,
+              arguments: {'index': 1});
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(
-              Icons.arrow_back_rounded,
-            ),
-          ),
-          title: const Text(
-            'Payment',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color: Colors.black,
-            ),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pushNamed(context, AppRoutes.navbar,
+                arguments: {'index': 1});
+          },
+          icon: const Icon(
+            Icons.arrow_back_rounded,
           ),
         ),
-        body: WebViewWidget(controller: controller));
+        title: const Text(
+          'Payment',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: Colors.black,
+          ),
+        ),
+      ),
+      body: WebViewWidget(controller: controller),
+    );
   }
 }

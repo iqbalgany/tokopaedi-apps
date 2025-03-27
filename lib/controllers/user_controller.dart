@@ -71,6 +71,9 @@ class UserController extends ChangeNotifier {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
+              duration: Duration(
+                milliseconds: 100,
+              ),
               content: Text('Profile updated successfully'),
             ),
           );
@@ -81,6 +84,9 @@ class UserController extends ChangeNotifier {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
+              duration: Duration(
+                milliseconds: 100,
+              ),
               content: Text('Failed to update profile'),
             ),
           );

@@ -25,6 +25,18 @@ class _NavbarState extends State<Navbar> {
   void initState() {
     super.initState();
     userController.fetchedUser(context);
+
+    Future.delayed(
+      Duration.zero,
+      () {
+        final args = ModalRoute.of(context)?.settings.arguments as Map?;
+        if (args != null && args.containsKey('index')) {
+          setState(() {
+            currentIndex = args['index'];
+          });
+        }
+      },
+    );
   }
 
   Widget buildContent(int currentIndex) {

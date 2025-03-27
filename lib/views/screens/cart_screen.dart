@@ -53,29 +53,32 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back_sharp),
-        ),
-        title: const Text(
-          'Keranjang',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 18,
-            color: Colors.black54,
-          ),
-        ),
-      ),
       body: Consumer<CartController>(
         builder: (context, cartController, child) {
           final orderController = Provider.of<OrderController>(context);
 
           return Column(
             children: [
+              const SizedBox(height: 50),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back_sharp),
+                  ),
+                  const Text(
+                    'Keranjang',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ],
+              ),
               const Divider(),
               Expanded(
-                child: (cartController.carts ?? []).isEmpty
+                child: cartController.carts.isEmpty
                     ? const Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -303,11 +306,7 @@ class _CartScreenState extends State<CartScreen> {
                               ),
                             );
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Checkout gagal'),
-                              ),
-                            );
+                            debugPrint('Checkout Gagal');
                           }
                         },
                         child: Container(

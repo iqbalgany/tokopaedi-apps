@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
+import 'package:grocery_store_app/helper/debouncer.dart';
 import 'package:grocery_store_app/models/category_model.dart';
 import 'package:grocery_store_app/models/product_model.dart';
 import 'package:grocery_store_app/services/product_service.dart';
 
 class ProductController extends ChangeNotifier {
   final ProductService _productService = ProductService();
+  final Debouncer _debouncer = Debouncer(milliseconds: 500);
 
   List<ProductModel> _products = [];
   List<CategoryModel> _categories = [];
@@ -12,16 +14,21 @@ class ProductController extends ChangeNotifier {
   bool hasMore = true;
   int _currentPage = 1;
 
+  String? _searchQuery;
+  String? _selectedCategory;
+  String? _minPrice;
+  String? _maxPrice;
+
+  String? get searchQuery => _searchQuery;
+  String? get selectedCategory => _selectedCategory;
+  String? get minPrice => _minPrice;
+  String? get maxPrice => _maxPrice;
   List<ProductModel> get products => _products;
   List<CategoryModel> get categories => _categories;
   bool get isLoading => _isLoading;
 
   Future<void> fetchProducts({
     bool isLoadMore = false,
-    String? name,
-    String? categoryId,
-    String? minPrice,
-    String? maxPrice,
   }) async {
     if (_isLoading || !hasMore) return;
 
@@ -31,10 +38,10 @@ class ProductController extends ChangeNotifier {
     try {
       List<ProductModel> fetchedProducts = await _productService.getProducts(
         page: isLoadMore ? _currentPage : 1,
-        name: name,
-        categoryId: categoryId,
-        minPrice: minPrice,
-        maxPrice: maxPrice,
+        name: _searchQuery,
+        categoryId: _selectedCategory,
+        minPrice: _minPrice,
+        maxPrice: _maxPrice,
       );
 
       if (!isLoadMore) {
@@ -71,17 +78,26 @@ class ProductController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> filterProducts({
+  void filterProducts({
     String? name,
     String? categoryId,
     String? minPrice,
     String? maxPrice,
-  }) async {
-    await fetchProducts(
-      name: name,
-      categoryId: categoryId,
-      minPrice: minPrice,
-      maxPrice: maxPrice,
+  }) {
+    _debouncer.run(
+      () {
+        _searchQuery = name;
+        _selectedCategory = categoryId;
+        _minPrice = minPrice;
+        _maxPrice = maxPrice;
+        hasMore = true;
+        _currentPage = 1;
+
+        _products = [];
+        notifyListeners();
+
+        fetchProducts(isLoadMore: false);
+      },
     );
   }
 }
