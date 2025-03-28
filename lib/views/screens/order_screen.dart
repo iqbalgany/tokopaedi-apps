@@ -31,14 +31,11 @@ class _OrderScreenState extends State<OrderScreen> {
           const SizedBox(height: 50),
 
           ///
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(0),
-              itemCount: orderController.orders.isEmpty
-                  ? 8
-                  : orderController.orders.length,
-              itemBuilder: (context, index) {
-                if (orderController.orders.isEmpty) {
+          if (orderController.isLoading)
+            Expanded(
+              child: ListView.builder(
+                itemCount: 8,
+                itemBuilder: (context, index) {
                   return Shimmer.fromColors(
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
@@ -69,140 +66,178 @@ class _OrderScreenState extends State<OrderScreen> {
                       ),
                     ),
                   );
-                }
-
-                final order = orderController.orders[index];
-                return GestureDetector(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          DetailOrderScreen(orderId: order.id!),
-                    ),
-                  ),
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(10, 5, 10,
-                        index == orderController.orders.length - 1 ? 100 : 5),
-                    padding: const EdgeInsets.all(15),
-                    width: MediaQuery.sizeOf(context).width,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(
-                        color: Colors.green,
+                },
+              ),
+            )
+          else if (orderController.orders.isEmpty)
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.shopping_cart_outlined,
+                        size: 80, color: Colors.grey[400]),
+                    const SizedBox(height: 10),
+                    const Text(
+                      "Belum ada pesanan",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
                       ),
                     ),
-                    child: Column(
-                      children: [
-                        ///
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.shopping_bag_outlined,
-                              color: Colors.green,
-                              size: 30,
-                            ),
-                            const SizedBox(width: 7),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Belanja',
+                    const SizedBox(height: 5),
+                    const Text(
+                      "Ayo mulai belanja sekarang!",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black45,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(0),
+                itemCount: orderController.orders.isEmpty
+                    ? 8
+                    : orderController.orders.length,
+                itemBuilder: (context, index) {
+                  final order = orderController.orders[index];
+                  return GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            DetailOrderScreen(orderId: order.id!),
+                      ),
+                    ),
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(10, 5, 10,
+                          index == orderController.orders.length - 1 ? 100 : 5),
+                      padding: const EdgeInsets.all(15),
+                      width: MediaQuery.sizeOf(context).width,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(
+                          color: Colors.green,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          ///
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.shopping_bag_outlined,
+                                color: Colors.green,
+                                size: 30,
+                              ),
+                              const SizedBox(width: 7),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Belanja',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  Text(
+                                    DateFormat('dd MMM yyyy')
+                                        .format(order.createdAt!),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 12,
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const Spacer(),
+                              Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                    color: orderController
+                                        .getStatusColor(order.status!),
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Text(
+                                  order.status!,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12,
-                                    color: Colors.black,
+                                    color: orderController
+                                        .getStatusTextColor(order.status!),
                                   ),
                                 ),
-                                Text(
-                                  DateFormat('dd MMM yyyy')
-                                      .format(order.createdAt!),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12,
-                                    color: Colors.black45,
+                              )
+                            ],
+                          ),
+                          const Divider(),
+
+                          ///
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    order.code!,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            const Spacer(),
-                            Container(
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                  color: orderController
-                                      .getStatusColor(order.status!),
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Text(
-                                order.status!,
+                                  Text(
+                                    '${order.orderItems!.length} barang',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14,
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+
+                          ///
+                          Row(
+                            children: [
+                              const Text(
+                                'Total Belanja : ',
                                 style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Text(
+                                'Rp${NumberFormat("#,###", "id_ID").format(order.totalPrice).toString()}',
+                                style: const TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                  color: orderController
-                                      .getStatusTextColor(order.status!),
+                                  fontSize: 14,
+                                  color: Colors.black,
                                 ),
                               ),
-                            )
-                          ],
-                        ),
-                        const Divider(),
-
-                        ///
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  order.code!,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Text(
-                                  '${order.orderItems!.length} barang',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 14,
-                                    color: Colors.black45,
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-
-                        ///
-                        Row(
-                          children: [
-                            const Text(
-                              'Total Belanja : ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Text(
-                              'Rp${NumberFormat("#,###", "id_ID").format(order.totalPrice).toString()}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
+                            ],
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
         ],
       ),
     );

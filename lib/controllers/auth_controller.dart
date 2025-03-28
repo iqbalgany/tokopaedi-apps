@@ -38,11 +38,17 @@ class AuthController extends ChangeNotifier {
     required BuildContext context,
   }) async {
     try {
+      await _authService.signupService(
+        name: name,
+        email: email,
+        password: password,
+      );
+
       Navigator.pushReplacementNamed(context, AppRoutes.signIn);
 
       notifyListeners();
     } catch (e) {
-      rethrow;
+      throw 'Registrasi gagal. Coba lagi';
     }
   }
 
