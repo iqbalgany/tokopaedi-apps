@@ -19,32 +19,16 @@ class AuthController extends ChangeNotifier {
 
       if (response != null && response.statusCode == 200) {
         String? token = response.data['data']['access_token'];
-
         if (token != null) {
           await StorageService.saveToken(token);
+          Navigator.pushNamed(context, AppRoutes.navbar);
         }
-        Navigator.pushReplacementNamed(context, AppRoutes.navbar);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login gagal, periksa kembali email dan password.'),
-          ),
-        );
       }
 
       notifyListeners();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Terjadi kesalahan: ${e.toString()}'),
-        ),
-      );
+      throw 'Login gagal, periksa kembali email dan password.';
     }
-  }
-
-  Future<void> logout(BuildContext context) async {
-    await StorageService.removeToken();
-    Navigator.pushReplacementNamed(context, AppRoutes.signIn);
   }
 
   Future signUp({
@@ -59,6 +43,17 @@ class AuthController extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<void> signOut(BuildContext context) async {
+    bool success = await _authService.signoutService();
+
+    if (success) {
+      await StorageService.removeToken();
+      Navigator.pushReplacementNamed(context, AppRoutes.signIn);
+    } else {
+      throw 'Gagal logout. coba lagi nanti';
     }
   }
 }

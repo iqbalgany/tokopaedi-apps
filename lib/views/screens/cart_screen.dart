@@ -104,7 +104,15 @@ class _CartScreenState extends State<CartScreen> {
                         padding: const EdgeInsets.all(0),
                         itemCount: _isLoading ? 5 : cartController.carts.length,
                         itemBuilder: (context, index) {
-                          final cartItem = cartController.carts[index];
+                          if (index >= cartController.carts.length) {
+                            return const SizedBox();
+                          }
+                          final cartItem = cartController.carts.isNotEmpty
+                              ? cartController.carts[index]
+                              : null;
+                          if (cartItem == null) {
+                            return const SizedBox();
+                          }
                           int? cartId = cartItem.id;
                           if (_isLoading) {
                             return Shimmer.fromColors(

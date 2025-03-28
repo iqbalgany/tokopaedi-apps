@@ -49,30 +49,19 @@ class _WebViewScreenState extends State<WebViewScreen> {
   }
 
   bool _isMidtransSuccessUrl(String url) {
-    return url.contains('success');
+    return url.toLowerCase().contains('midtrans');
   }
 
   bool hasNavigated = false;
 
   void _checkMidtransCallback(String url) {
-    if (!hasNavigated) {
+    if (!_isMidtransSuccessUrl(url) && !hasNavigated) {
       hasNavigated = true;
-      if (url.contains('finish') || url.contains('return')) {
-        Navigator.pushNamed(context, AppRoutes.navbar, arguments: {'index': 1});
-      } else if (_isMidtransSuccessUrl(url) &&
-          !url.contains('finish') &&
-          !url.contains('return')) {
-        Future.delayed(
-          const Duration(seconds: 5),
-          () {
-            if (!hasNavigated) {
-              hasNavigated = true;
-              Navigator.pushNamed(context, AppRoutes.navbar,
-                  arguments: {'index': 1});
-            }
-          },
-        );
-      }
+      Navigator.pushNamed(
+        context,
+        AppRoutes.navbar,
+        arguments: {'index': 1},
+      );
     }
   }
 

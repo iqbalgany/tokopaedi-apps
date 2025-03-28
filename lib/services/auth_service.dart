@@ -56,4 +56,29 @@ class AuthService {
       rethrow;
     }
   }
+
+  Future<bool> signoutService() async {
+    String? token = await StorageService.getToken();
+
+    try {
+      Response response = await DioClient.instance.post(
+        '/logout',
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Authorization": 'Bearer $token'
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        await StorageService.removeToken();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

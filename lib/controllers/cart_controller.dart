@@ -32,7 +32,7 @@ class CartController extends ChangeNotifier {
       int index = fetchedCarts
           .indexWhere((item) => item.product?.id == cart.product?.id);
       if (index != -1) {
-        fetchedCarts[index].quantity = cart.quantity;
+        fetchedCarts[index].quantity = cart.quantity ?? 1;
       }
     }
 
@@ -53,7 +53,10 @@ class CartController extends ChangeNotifier {
           (_carts[index].quantity ?? 0) + additionalQuantity;
     } else {
       _carts.add(CartModel(
-        product: ProductModel(id: productId),
+        product: ProductModel(
+          id: productId,
+          price: 0,
+        ),
         quantity: additionalQuantity,
       ));
     }
@@ -76,7 +79,7 @@ class CartController extends ChangeNotifier {
     if (_carts[index].quantity! > 1) {
       _carts[index].quantity = _carts[index].quantity! - 1;
     } else {
-      carts.removeAt(index);
+      _carts.removeAt(index);
     }
     notifyListeners();
   }
@@ -84,7 +87,8 @@ class CartController extends ChangeNotifier {
   double getTotalPrice() {
     return _carts.fold(
       0,
-      (sum, item) => sum + (item.quantity! * item.product!.price!),
+      (sum, item) =>
+          sum + ((item.quantity! ?? 0) * (item.product!.price! ?? 0)),
     );
   }
 

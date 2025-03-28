@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_store_app/controllers/auth_controller.dart';
 import 'package:grocery_store_app/controllers/user_controller.dart';
 import 'package:grocery_store_app/models/user_model.dart';
 import 'package:grocery_store_app/views/widgets/profile_item.dart';
@@ -97,6 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authController = Provider.of<AuthController>(context);
     return Consumer<UserController>(
       builder: (context, userController, child) {
         ///
@@ -217,7 +219,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ///
                 GestureDetector(
                   onTap: () {
-                    // userController.signOut(context);
+                    authController.signOut(context);
                   },
                   child: Container(
                     margin: const EdgeInsets.fromLTRB(24, 20, 24, 100),
