@@ -57,7 +57,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   color: Colors.black,
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               GestureDetector(
                 onTap: () {
                   setState(() {
@@ -68,7 +68,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   productController.clearFilters();
                 },
                 child: Container(
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: Colors.green,
@@ -76,7 +76,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.green,
                   ),
-                  child: Text(
+                  child: const Text(
                     'Clear',
                     style: TextStyle(
                       fontWeight: FontWeight.w300,

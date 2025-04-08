@@ -95,7 +95,7 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
             Icons.arrow_back_rounded,
           ),
         ),
-        title: Text(
+        title: const Text(
           'Detail Order',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -316,7 +316,7 @@ class _DetailOrderScreenState extends State<DetailOrderScreen> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 80),
+                          const SizedBox(height: 80),
                         ],
                       ),
                     ),

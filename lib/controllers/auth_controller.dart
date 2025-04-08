@@ -30,7 +30,7 @@ class AuthController extends ChangeNotifier {
       throw 'Login gagal, periksa kembali email dan password.';
     }
   }
-
+ 
   Future signUp({
     required String name,
     required String email,
